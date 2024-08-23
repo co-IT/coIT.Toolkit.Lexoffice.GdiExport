@@ -52,7 +52,7 @@ jobs:
           VERSION: ${{ github.ref_name }}
         run: |
           # JSON String erstellen
-          $jsonString = '{"RegistryKey":"HKUD\\Software\\\\co-IT.eu GmbH\\Clockodo QuickActions\\Version", "Version":"' + $env:VERSION + '"}'
+          $jsonString = '{"RegistryKey":"HKUD\\Software\\\\co-IT.eu GmbH\\Lexoffice Gdi Export\\Version", "Version":"' + $env:VERSION + '"}'
           
           # Datei erstellen
           $jsonString | Set-Content -Path advinst_update.json
