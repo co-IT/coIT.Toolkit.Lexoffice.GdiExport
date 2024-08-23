@@ -40,9 +40,10 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
     <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
     <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="DESKTO~1|DesktopFolder" IsPseudoRoot="1"/>
+    <ROW Directory="LexofficeGdiExport_Dir" Directory_Parent="APPDIR" DefaultDir="LEXOFF~1|Lexoffice Gdi Export"/>
     <ROW Directory="StartMenuFolder" Directory_Parent="TARGETDIR" DefaultDir="STARTM~1|StartMenuFolder" IsPseudoRoot="1"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
-    <ROW Directory="img_Dir" Directory_Parent="APPDIR" DefaultDir="img"/>
+    <ROW Directory="img_Dir" Directory_Parent="LexofficeGdiExport_Dir" DefaultDir="img"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SideBySideGuidComponent">
     <ROW Component="APPDIR" Value="{A71419CB-82C1-47EB-8640-E1DE1E796541}"/>
@@ -52,9 +53,9 @@
     <ROW Component="A0BFC224E0E9125ADE0B2DBF343" ComponentId="{5F129B54-8D45-466C-9E8C-FF11FCF3F736}" Directory_="APPDIR" Attributes="4" KeyPath="A0BFC224E0E9125ADE0B2DBF343" Options="2"/>
     <ROW Component="APPDIR" ComponentId="{A71419CB-82C1-47EB-8640-E1DE1E796541}" Directory_="APPDIR" Attributes="0"/>
     <ROW Component="ProductInformation" ComponentId="{486FC092-9E1E-4C3F-8E3E-79AC99E61BF6}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
-    <ROW Component="cache_kunden.json" ComponentId="{4EEE1881-EC25-48FF-8E2B-748B5ADA8F00}" Directory_="APPDIR" Attributes="0" KeyPath="cache_kunden.json" Type="0"/>
-    <ROW Component="coIT.Toolkit.Lexoffice.GdiExport.exe" ComponentId="{D1981DF2-84DF-4F51-B306-63A84F75F2D1}" Directory_="APPDIR" Attributes="256" KeyPath="coIT.Toolkit.Lexoffice.GdiExport.exe"/>
-    <ROW Component="installer_banner.jpg" ComponentId="{4DE36DEE-16D8-4409-BCDF-AA2ED37C0E1A}" Directory_="img_Dir" Attributes="0" KeyPath="installer_banner.jpg" Type="0"/>
+    <ROW Component="cache_kunden.json" ComponentId="{1C654BFA-A57D-4DDD-B64F-240108504D10}" Directory_="LexofficeGdiExport_Dir" Attributes="0" KeyPath="cache_kunden.json" Type="0"/>
+    <ROW Component="coIT.Toolkit.Lexoffice.GdiExport.exe" ComponentId="{4FE11836-C3AC-425D-ACEB-4B21FAFDF87C}" Directory_="LexofficeGdiExport_Dir" Attributes="256" KeyPath="coIT.Toolkit.Lexoffice.GdiExport.exe"/>
+    <ROW Component="installer_banner.jpg" ComponentId="{C8C16863-E8FC-40CE-98BF-29904B7CA372}" Directory_="img_Dir" Attributes="0" KeyPath="installer_banner.jpg" Type="0"/>
     <ROW Component="updater.exe" ComponentId="{3CC28805-19D3-42F2-A43C-04941CC2557C}" Directory_="APPDIR" Attributes="0" KeyPath="updater.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
@@ -200,9 +201,9 @@
     <ROW Feature_="MainFeature" Component_="ProductInformation"/>
     <ROW Feature_="MainFeature" Component_="updater.exe"/>
     <ROW Feature_="MainFeature" Component_="cache_kunden.json"/>
+    <ROW Feature_="A0BFC224E0E9125ADE0B2DBF343" Component_="A0BFC224E0E9125ADE0B2DBF343"/>
     <ROW Feature_="MainFeature" Component_="coIT.Toolkit.Lexoffice.GdiExport.exe"/>
     <ROW Feature_="MainFeature" Component_="installer_banner.jpg"/>
-    <ROW Feature_="A0BFC224E0E9125ADE0B2DBF343" Component_="A0BFC224E0E9125ADE0B2DBF343"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="program_icon.exe" SourcePath="build\LexofficeToGdiExport\Release\net8.0-windows8.0\publish\win-x64\img\program_icon.ico" Index="0"/>
@@ -271,8 +272,8 @@
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
-    <ROW Shortcut="Verknpfungzu" Directory_="DesktopFolder" Name="LEXOFF~1|Lexoffice Gdi Export" Component_="coIT.Toolkit.Lexoffice.GdiExport.exe" Target="[#coIT.Toolkit.Lexoffice.GdiExport.exe]" Hotkey="0" Icon_="program_icon.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="Verknpfungzu_1" Directory_="StartMenuFolder" Name="LEXOFF~1|Lexoffice Gdi Export" Component_="coIT.Toolkit.Lexoffice.GdiExport.exe" Target="[#coIT.Toolkit.Lexoffice.GdiExport.exe]" Hotkey="0" Icon_="program_icon.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="Verknpfungzu" Directory_="StartMenuFolder" Name="LEXOFF~1|Lexoffice Gdi Export" Component_="coIT.Toolkit.Lexoffice.GdiExport.exe" Target="[#coIT.Toolkit.Lexoffice.GdiExport.exe]" Hotkey="0" Icon_="program_icon.exe" IconIndex="0" ShowCmd="1" WkDir="LexofficeGdiExport_Dir"/>
+    <ROW Shortcut="Verknpfungzu_1" Directory_="DesktopFolder" Name="LEXOFF~1|Lexoffice Gdi Export" Component_="coIT.Toolkit.Lexoffice.GdiExport.exe" Target="[#coIT.Toolkit.Lexoffice.GdiExport.exe]" Hotkey="0" Icon_="program_icon.exe" IconIndex="0" ShowCmd="1" WkDir="LexofficeGdiExport_Dir"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="classic"/>
@@ -289,7 +290,7 @@
     <ROW SearchKey="A0BFC224E0E9125ADE0B2DBF343SystemFo" Prereq="A0BFC224E0E9125ADE0B2DBF343" SearchType="14" SearchString="[ProgramFiles64Folder]dotnet\shared\Microsoft.WindowsDesktop.App" VerMin="8.0.6" Order="1" Property="PreReqSearch_A0BFC224E0E9125ADE0B2D"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SynchronizedFolderComponent">
-    <ROW Directory_="APPDIR" SourcePath="build\LexofficeToGdiExport\Release\net8.0-windows8.0\publish\win-x64" Feature="MainFeature" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6" FileAddOptions="4"/>
+    <ROW Directory_="LexofficeGdiExport_Dir" SourcePath="build\LexofficeToGdiExport\Release\net8.0-windows8.0\publish\win-x64" Feature="MainFeature" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6" FileAddOptions="4"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.UpdaterComponent">
     <ROW Updater="updater.exe" URL="URL" SearchFreq="CheckFrequency" DownloadsFolder="DownloadsFolder" ID="ID" TargetDir="AppDir" AppName="ApplicationName" AppVersion="ApplicationVersion" CompanyName="CompanyName" DefCommandLine="DefaultCommandLine" Flags="Flags" IconPath="build\LexofficeToGdiExport\Release\net8.0-windows8.0\publish\win-x64\img\program_icon.ico" IconIndex="0" UnistallCASeq="AI_UPDATER_UNINSTALL" Description="[|UpdaterName] [|ProductVersion]"/>
