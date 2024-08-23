@@ -9,6 +9,9 @@ jobs:
   clockodo-quickactions-installer-erstellen:
     runs-on: windows-latest
     name: ClockodoQuickActions Installer Bauen
+    permissions:
+      packages: write
+      contents: read
 
     steps:
       - name: Repository laden
@@ -16,6 +19,9 @@ jobs:
 
       - name: .NET installieren
         uses: actions/setup-dotnet@v4
+
+      - name: GitHub Package Manager registrieren
+        run: dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/co-IT/index.json"
 
       - name: Anwendung bauen
         run: dotnet publish -c Release -r win-x64 ${{ github.workspace }}\coIT.Toolkit.Lexoffice.GdiExport.csproj --property:PublishProfile="FolderProfile"
