@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Ardalis.SmartEnum" Version="8.0.0" />
+    <PackageReference Include="coIT.Libraries.Clockodo" Version="1.0.0" />
+    <PackageReference Include="coIT.Libraries.ConfigurationManager" Version="1.0.0" />
+    <PackageReference Include="coIT.Libraries.Gdi" Version="1.0.0" />
+    <PackageReference Include="coIT.Libraries.LexOffice" Version="1.0.0" />
+    <PackageReference Include="coIT.Libraries.Lexoffice.BusinessRules" Version="1.0.0" />
+    <PackageReference Include="coIT.Libraries.Toolkit.Datengrundlagen" Version="1.0.0" />
+    <PackageReference Include="coIT.Libraries.WinForms" Version="1.0.0" />
+    <PackageReference Include="Microsoft.DependencyValidation.Analyzers" Version="0.11.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="LadeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="cache_kunden.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="cache_rechnungen.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>
