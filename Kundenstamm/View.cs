@@ -1,8 +1,9 @@
 using System.ComponentModel;
-using coIT.Lexoffice.GdiExport.Kundenstamm.Filter;
 using coIT.Libraries.LexOffice.DataContracts.Country;
 using coIT.Libraries.Toolkit.Datengrundlagen.Kunden;
 using coIT.Libraries.WinForms;
+using coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm;
+using coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm.Filter;
 
 namespace coIT.Lexoffice.GdiExport.Kundenstamm;
 

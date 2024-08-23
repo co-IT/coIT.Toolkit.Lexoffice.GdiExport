@@ -9,7 +9,7 @@ using coIT.Libraries.Toolkit.Datengrundlagen.Kunden;
 using coIT.Libraries.Toolkit.Datengrundlagen.Konten;
 using coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter;
 
-namespace coIT.Lexoffice.GdiExport;
+namespace coIT.Toolkit.Lexoffice.GdiExport;
 
 internal class InvoiceMapper
 {

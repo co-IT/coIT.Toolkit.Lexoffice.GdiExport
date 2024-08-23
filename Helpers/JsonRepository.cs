@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Newtonsoft.Json;
 
-namespace coIT.Lexoffice.GdiExport.Helpers;
+namespace coIT.Toolkit.Lexoffice.GdiExport.Helpers;
 
 internal class JsonRepository<T>
     where T : class, new()

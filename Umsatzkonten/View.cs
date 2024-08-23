@@ -1,6 +1,6 @@
-using coIT.Lexoffice.GdiExport.Helpers;
 using coIT.Libraries.Toolkit.Datengrundlagen.Konten;
 using coIT.Libraries.WinForms;
+using coIT.Toolkit.Lexoffice.GdiExport.Helpers;
 
 namespace coIT.Lexoffice.GdiExport.Umsatzkonten;
 

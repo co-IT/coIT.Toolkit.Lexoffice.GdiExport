@@ -1,7 +1,7 @@
 using coIT.Libraries.LexOffice.DataContracts.Contacts;
 using LexOfficeInvoice = coIT.Libraries.LexOffice.DataContracts.Invoice.Invoice;
 
-namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung.LexofficeCaching
+namespace coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.LexofficeCaching
 {
     public interface IchCacheLexofficeAbfragen
     {

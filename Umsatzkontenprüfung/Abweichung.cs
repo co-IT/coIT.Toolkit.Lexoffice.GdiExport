@@ -1,4 +1,4 @@
-namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
+namespace coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung
 {
     public record struct Abweichung(string Ergebnis, string Rechnungsnr, string Fehler)
     {

@@ -2,7 +2,7 @@ using System.Text;
 using coIT.Libraries.Gdi.Accounting.Contracts;
 using CSharpFunctionalExtensions;
 
-namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
+namespace coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung
 {
     public class VersendeteRechnung
     {
@@ -18,7 +18,7 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
         {
             return $"{Nummer}      {Datum}      "
                 + $"{Kundenname.PadRight(KundennameLänge + 3)}      "
-                + $"{Netto, 12:C2}      ({Brutto, 12:C2})";
+                + $"{Netto,12:C2}      ({Brutto,12:C2})";
         }
 
         public Result MitBuchungAbgleichen(SaleBooking buchung)

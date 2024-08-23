@@ -1,6 +1,6 @@
 using coIT.Libraries.Gdi.Accounting.Contracts;
 
-namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
+namespace coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung
 {
     public class AbgleichBuchhaltung
     {

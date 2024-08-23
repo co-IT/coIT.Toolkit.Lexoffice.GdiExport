@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using coIT.Lexoffice.GdiExport.Helpers;
 using coIT.Libraries.Clockodo.TimeEntries;
 using coIT.Libraries.Clockodo.TimeEntries.Contracts;
 using coIT.Libraries.LexOffice;
@@ -7,6 +6,9 @@ using coIT.Libraries.LexOffice.DataContracts.Invoice;
 using coIT.Libraries.Toolkit.Datengrundlagen.Konten;
 using coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter;
 using coIT.Libraries.WinForms;
+using coIT.Toolkit.Lexoffice.GdiExport;
+using coIT.Toolkit.Lexoffice.GdiExport.Helpers;
+using coIT.Toolkit.Lexoffice.GdiExport.Mitarbeiterliste;
 
 namespace coIT.Lexoffice.GdiExport.Mitarbeiterliste
 {

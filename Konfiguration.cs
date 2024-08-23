@@ -1,7 +1,7 @@
 using coIT.Libraries.Clockodo.TimeEntries.Contracts;
 using Newtonsoft.Json.Linq;
 
-namespace coIT.Lexoffice.GdiExport
+namespace coIT.Toolkit.Lexoffice.GdiExport
 {
     public class Konfiguration
     {

@@ -1,4 +1,6 @@
-namespace coIT.Lexoffice.GdiExport
+using coIT.Lexoffice.GdiExport;
+
+namespace coIT.Toolkit.Lexoffice.GdiExport
 {
     internal static class Program
     {

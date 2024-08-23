@@ -1,9 +1,9 @@
-using coIT.Lexoffice.GdiExport.Helpers;
 using coIT.Libraries.Gdi.Accounting.Contracts;
 using coIT.Libraries.LexOffice;
 using coIT.Libraries.Toolkit.Datengrundlagen.Kunden;
+using coIT.Toolkit.Lexoffice.GdiExport.Helpers;
 
-namespace coIT.Lexoffice.GdiExport.Kundenstamm
+namespace coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm
 {
     public class Leistungsempfänger
     {

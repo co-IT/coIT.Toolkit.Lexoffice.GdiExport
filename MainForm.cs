@@ -1,7 +1,5 @@
 using System.Collections.Immutable;
 using coIT.Clockodo.QuickActions;
-using coIT.Lexoffice.GdiExport.Helpers;
-using coIT.Lexoffice.GdiExport.Kundenstamm;
 using coIT.Lexoffice.GdiExport.Umsatzkontenprüfung;
 using coIT.Libraries.ConfigurationManager;
 using coIT.Libraries.ConfigurationManager.Cryptography;
@@ -11,6 +9,9 @@ using coIT.Libraries.Gdi.Accounting.Contracts;
 using coIT.Libraries.LexOffice;
 using coIT.Libraries.Toolkit.Datengrundlagen.Konten;
 using coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter;
+using coIT.Toolkit.Lexoffice.GdiExport;
+using coIT.Toolkit.Lexoffice.GdiExport.Helpers;
+using coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm;
 using CSharpFunctionalExtensions;
 using GdiInvoice = coIT.Libraries.Gdi.Accounting.Contracts.Invoice;
 using KundenstammDaten = coIT.Libraries.Toolkit.Datengrundlagen.Kunden.Kundenstamm;

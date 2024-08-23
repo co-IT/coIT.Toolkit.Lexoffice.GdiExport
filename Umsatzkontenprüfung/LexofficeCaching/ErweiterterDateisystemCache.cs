@@ -5,7 +5,7 @@ using coIT.Libraries.LexOffice.DataContracts.Contacts;
 using coIT.Libraries.LexOffice.DataContracts.Invoice;
 using Newtonsoft.Json;
 
-namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung.LexofficeCaching
+namespace coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.LexofficeCaching
 {
     internal class ErweiterterDateisystemCache : IchCacheLexofficeAbfragen
     {

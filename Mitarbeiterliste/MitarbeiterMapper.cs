@@ -1,7 +1,7 @@
 using coIT.Libraries.Clockodo.TimeEntries.Contracts;
 using coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter;
 
-namespace coIT.Lexoffice.GdiExport.Mitarbeiterliste
+namespace coIT.Toolkit.Lexoffice.GdiExport.Mitarbeiterliste
 {
     internal static class MitarbeiterMapper
     {

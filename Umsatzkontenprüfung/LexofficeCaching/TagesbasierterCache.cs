@@ -6,7 +6,7 @@ using coIT.Libraries.WinForms.DateTimeButtons;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using LexOfficeInvoice = coIT.Libraries.LexOffice.DataContracts.Invoice.Invoice;
 
-namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung.LexofficeCaching
+namespace coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.LexofficeCaching
 {
     internal class TagesbasierterCache : IchCacheLexofficeAbfragen
     {

@@ -3,7 +3,7 @@ using coIT.Libraries.LexOffice.DataContracts.Contacts;
 using coIT.Libraries.LexOffice.DataContracts.Country;
 using coIT.Libraries.Toolkit.Datengrundlagen.Kunden;
 
-namespace coIT.Lexoffice.GdiExport.Kundenstamm;
+namespace coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm;
 
 internal static class KundenMapper
 {

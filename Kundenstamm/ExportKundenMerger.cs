@@ -1,6 +1,6 @@
 using coIT.Libraries.Toolkit.Datengrundlagen.Kunden;
 
-namespace coIT.Lexoffice.GdiExport.Kundenstamm;
+namespace coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm;
 
 internal class ExportKundenMerger
 {

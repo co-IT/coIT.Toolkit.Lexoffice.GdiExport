@@ -1,10 +1,11 @@
 using System.Data;
-using coIT.Lexoffice.GdiExport.Umsatzkontenprüfung.LexofficeCaching;
 using coIT.Libraries.Gdi.Accounting;
 using coIT.Libraries.Gdi.Accounting.Contracts;
 using coIT.Libraries.LexOffice;
 using coIT.Libraries.LexOffice.DataContracts.Contacts;
 using coIT.Libraries.WinForms.DateTimeButtons;
+using coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung;
+using coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.LexofficeCaching;
 using CSharpFunctionalExtensions;
 using LexOfficeInvoice = coIT.Libraries.LexOffice.DataContracts.Invoice.Invoice;
 
