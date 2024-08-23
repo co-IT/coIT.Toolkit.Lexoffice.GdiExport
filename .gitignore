@@ -1,3 +1,6 @@
+# Keine Temporären Advanced Installer Dateien committen
+coIT.Toolkit.Lexoffice.GdiExport.Installer-cache/
+
 # Damit PATs nicht geleakt werden
 nuget.config
 
