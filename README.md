@@ -2,7 +2,7 @@
 
 Um die notwendigen Packages aus dem privaten Package-Manager der co-IT aus GitHub zu laden, wird eine eigene `nuget.config` benötigt.
 
-1. Stelle sicher, dass die [GitHub Cli](https://cli.github.com/) bei dir installiert ist
+1. Stelle sicher, dass die [GitHub Cli](https://cli.github.com/) bei dir installiert ist ([winget](https://github.com/microsoft/winget-cli))
 2. Falls du bisher noch nie eine `nuget.config` anlegen musstest führe `gh auth login --scopes read:packages` aus und verknüpfge deinen GitHub Account
 3. Lege eine `nuget.config` Datei mit dem folgenden Inhalt an
 
