@@ -72,7 +72,8 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
             var ergebnis = await KundenUndRechnungenLaden(zeitraum, cacheAktualisieren)
                 .Map(tuple => UmsatzlisteErstellen(tuple.Kunden, tuple.Rechnungen))
                 .Tap(UmsätzeAnzeigen)
-                .Tap(umsätze => umsatzkontoKundeView.Aktualisieren(umsätze));
+                .Tap(umsatzkontoKundeView.Aktualisieren)
+                .Tap(kundeUmsatzkontoView.Aktualisieren);
 
             if (ergebnis.IsFailure)
                 MessageBox.Show(

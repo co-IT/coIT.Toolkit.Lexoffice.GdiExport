@@ -44,15 +44,17 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
             tabControl1 = new TabControl();
             tbpPrüfung = new TabPage();
             tabPage2 = new TabPage();
+            umsatzkontoKundeView = new Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.Auswertungen.UmsatzkontoKundeView();
             tabPage1 = new TabPage();
             tabPage3 = new TabPage();
-            umsatzkontoKundeView = new Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.Auswertungen.UmsatzkontoKundeView();
+            kundeUmsatzkontoView = new Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.Auswertungen.KundeUmsatzkontoView();
             gbxZeitraum.SuspendLayout();
             groupBox1.SuspendLayout();
             panel1.SuspendLayout();
             tabControl1.SuspendLayout();
             tbpPrüfung.SuspendLayout();
             tabPage2.SuspendLayout();
+            tabPage1.SuspendLayout();
             SuspendLayout();
             // 
             // tvErgebnis
@@ -209,8 +211,17 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
             tabPage2.Text = "Konto Kunde";
             tabPage2.UseVisualStyleBackColor = true;
             // 
+            // umsatzkontoKundeView
+            // 
+            umsatzkontoKundeView.Dock = DockStyle.Fill;
+            umsatzkontoKundeView.Location = new Point(3, 3);
+            umsatzkontoKundeView.Name = "umsatzkontoKundeView";
+            umsatzkontoKundeView.Size = new Size(751, 295);
+            umsatzkontoKundeView.TabIndex = 0;
+            // 
             // tabPage1
             // 
+            tabPage1.Controls.Add(kundeUmsatzkontoView);
             tabPage1.Location = new Point(4, 24);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
@@ -229,13 +240,13 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
             tabPage3.Text = "Kunde Mitarbeiter";
             tabPage3.UseVisualStyleBackColor = true;
             // 
-            // umsatzkontoKundeView
+            // kundeUmsatzkontoView
             // 
-            umsatzkontoKundeView.Dock = DockStyle.Fill;
-            umsatzkontoKundeView.Location = new Point(3, 3);
-            umsatzkontoKundeView.Name = "umsatzkontoKundeView";
-            umsatzkontoKundeView.Size = new Size(751, 295);
-            umsatzkontoKundeView.TabIndex = 0;
+            kundeUmsatzkontoView.Dock = DockStyle.Fill;
+            kundeUmsatzkontoView.Location = new Point(3, 3);
+            kundeUmsatzkontoView.Name = "kundeUmsatzkontoView";
+            kundeUmsatzkontoView.Size = new Size(751, 295);
+            kundeUmsatzkontoView.TabIndex = 0;
             // 
             // UmsatzkontenprüfungControl
             // 
@@ -254,6 +265,7 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
             tabControl1.ResumeLayout(false);
             tbpPrüfung.ResumeLayout(false);
             tabPage2.ResumeLayout(false);
+            tabPage1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -278,5 +290,6 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
         private TabPage tabPage1;
         private TabPage tabPage3;
         private Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.Auswertungen.UmsatzkontoKundeView umsatzkontoKundeView;
+        private Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.Auswertungen.KundeUmsatzkontoView kundeUmsatzkontoView;
     }
 }
