@@ -16,10 +16,10 @@
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="DialogBitmap" Value="dialog.jpg" MultiBuildValue="DefaultBuild:installer_dialog.jpg" Type="1" MsiKey="DialogBitmap"/>
     <ROW Property="Manufacturer" Value="co-IT.eu GmbH"/>
-    <ROW Property="ProductCode" Value="1031:{91AE648E-012C-4151-8609-C5D6C806CB21} " Type="16"/>
+    <ROW Property="ProductCode" Value="1031:{416D3CD6-ECB3-479B-94DD-7909EB663D70} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="Lexoffice Gdi Export"/>
-    <ROW Property="ProductVersion" Value="0.0.1" Options="32"/>
+    <ROW Property="ProductVersion" Value="0.0.15" Options="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{B6E20C3F-2B24-4038-80DD-D2D883ACAD16}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
@@ -119,6 +119,7 @@
     <ROW Name="Prereq.dll" SourcePath="&lt;AI_CUSTACTS&gt;Prereq.dll"/>
     <ROW Name="SoftwareDetector.dll" SourcePath="&lt;AI_CUSTACTS&gt;SoftwareDetector.dll"/>
     <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
+    <ROW Name="file_deleter.ps1" SourcePath="&lt;AI_SCRIPTS&gt;file_deleter.ps1"/>
     <ROW Name="installer_banner.jpg" SourcePath="build\LexofficeToGdiExport\Release\net8.0-windows8.0\publish\win-x64\img\installer_banner.jpg"/>
     <ROW Name="installer_dialog.jpg" SourcePath="build\LexofficeToGdiExport\Release\net8.0-windows8.0\publish\win-x64\img\installer_dialog.jpg"/>
   </COMPONENT>

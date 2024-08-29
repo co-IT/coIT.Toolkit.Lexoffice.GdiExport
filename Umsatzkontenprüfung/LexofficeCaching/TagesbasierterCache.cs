@@ -42,7 +42,7 @@ namespace coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.LexofficeCaching
                 .Select(voucherGrouping => new
                 {
                     Tag = voucherGrouping.First().VoucherDate,
-                    Liste = voucherGrouping.ToList()
+                    Liste = voucherGrouping.ToList(),
                 })
                 .ToDictionary(entry => entry.Tag.ToDateOnly(), entry => entry.Liste);
 

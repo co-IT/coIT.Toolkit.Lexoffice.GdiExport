@@ -52,7 +52,7 @@ public partial class View : UserControl
             "Land",
             "Länderkürzel",
             "asdf",
-            "status"
+            "status",
         };
 
         dgvCustomers.SetHeadersTo(viewHeaders);

@@ -1,9 +1,11 @@
 using System.Data;
+using coIT.Libraries.ConfigurationManager;
 using coIT.Libraries.Gdi.Accounting;
 using coIT.Libraries.Gdi.Accounting.Contracts;
 using coIT.Libraries.LexOffice;
 using coIT.Libraries.LexOffice.DataContracts.Contacts;
 using coIT.Libraries.WinForms.DateTimeButtons;
+using coIT.Toolkit.Lexoffice.GdiExport;
 using coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung;
 using coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.LexofficeCaching;
 using CSharpFunctionalExtensions;
@@ -13,13 +15,17 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
 {
     internal partial class UmsatzkontenprüfungControl : UserControl
     {
-        private IchCacheLexofficeAbfragen _cache;
-        private readonly LexofficeService _lexofficeService;
+        private readonly EnvironmentManager _environmentManager;
+        private readonly FileSystemManager _fileSystemManager;
 
-        internal UmsatzkontenprüfungControl(LexofficeService lexofficeService)
+        internal UmsatzkontenprüfungControl(
+            EnvironmentManager environmentManager,
+            FileSystemManager fileSystemManager
+        )
         {
             InitializeComponent();
-            _lexofficeService = lexofficeService;
+            _environmentManager = environmentManager;
+            _fileSystemManager = fileSystemManager;
         }
 
         private async void btnAbfragen_Click(object sender, EventArgs e)
@@ -54,12 +60,6 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
             btnCsvAuswählen.Enabled = false;
 
             InitiiereStandardAbfragezeitraum();
-
-#if DEBUG
-            _cache = await ErweiterterDateisystemCache.LadeCacheAusLokalerDatei(_lexofficeService);
-#else
-            _cache = new TagesbasierterCache(_lexofficeService);
-#endif
         }
 
         private async Task UmsatzAbfragenKlick()
@@ -68,8 +68,19 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
 
             var zeitraum = ZeitraumAuslesen();
             var cacheAktualisieren = cbxCacheNeuladen.Checked;
-            var umsätze = await UmsätzeLaden(zeitraum, cacheAktualisieren);
-            UmsätzeAnzeigen(umsätze);
+
+            var ergebnis = await KundenUndRechnungenLaden(zeitraum, cacheAktualisieren)
+                .Map(tuple => UmsatzlisteErstellen(tuple.Kunden, tuple.Rechnungen))
+                .Tap(UmsätzeAnzeigen)
+                .Tap(umsätze => umsatzkontoKundeView.Aktualisieren(umsätze));
+
+            if (ergebnis.IsFailure)
+                MessageBox.Show(
+                    ergebnis.Error,
+                    "Berechnung fehlgeschlagen",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
 
             ButtonsBlockieren(false);
         }
@@ -80,21 +91,27 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
             btnCsvAuswählen.Enabled = !blockieren;
         }
 
-        private async Task<List<VersendeteRechnung>> UmsätzeLaden(
-            (DateOnly Von, DateOnly Bis) zeitraum,
-            bool cacheAktualisieren
-        )
+        private async Task<
+            Result<(List<ContactInformation> Kunden, List<LexOfficeInvoice> Rechnungen)>
+        > KundenUndRechnungenLaden((DateOnly Von, DateOnly Bis) zeitraum, bool cacheAktualisieren)
         {
-            var kunden = await _cache.KundenAbfragen(cacheAktualisieren);
-            var rechnungen = await _cache.RechnungenAbfragen(zeitraum, cacheAktualisieren);
-
+            return await _environmentManager
+                .Get<Konfiguration>()
+                .Map(konfiguration => new LexofficeService(konfiguration.LexofficeKey))
 #if DEBUG
-            await ((ErweiterterDateisystemCache)_cache).LokalenCacheErzeugen();
+                .Map(ErweiterterDateisystemCache.LadeCacheAusLokalerDatei)
+#else
+                .Map(service => new TagesbasierterCache(service))
 #endif
-
-            var umsätze = UmsatzlisteErstellen(kunden, rechnungen);
-
-            return umsätze;
+                .Map(async cache =>
+                {
+                    var kunden = await cache.KundenAbfragen(cacheAktualisieren);
+                    var rechnungen = await cache.RechnungenAbfragen(zeitraum, cacheAktualisieren);
+#if DEBUG
+                    await cache.LokalenCacheErzeugen();
+#endif
+                    return (kunden, rechnungen);
+                });
         }
 
         private void UmsätzeAnzeigen(IEnumerable<VersendeteRechnung> umsätze)
@@ -105,35 +122,40 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
                 .Select(gruppe => new
                 {
                     Umsatzkonto = gruppe.Key,
-                    Rechnungen = gruppe.OrderBy(r => r.Datum)
+                    Rechnungen = gruppe.OrderBy(r => r.Datum),
                 });
 
-            tvErgebnis.BeginUpdate();
-
-            tvErgebnis.Nodes.Clear();
-
-            var derzeitigesKonto = 0;
-            foreach (var kontoMitRechnugen in nachKontoGruppierteZeilen)
+            tvErgebnis.Invoke(() =>
             {
-                var kontoSummeNetto = kontoMitRechnugen.Rechnungen.Sum(rechnung => rechnung.Netto);
-                var kontoSummeBrutto = kontoMitRechnugen.Rechnungen.Sum(rechnung =>
-                    rechnung.Brutto
-                );
+                tvErgebnis.BeginUpdate();
 
-                var kontoText =
-                    $"{kontoMitRechnugen.Umsatzkonto}: {kontoSummeNetto:C2} | {kontoSummeBrutto:C2}";
+                tvErgebnis.Nodes.Clear();
 
-                tvErgebnis.Nodes.Add(kontoText);
-
-                foreach (var rechnung in kontoMitRechnugen.Rechnungen)
+                var derzeitigesKonto = 0;
+                foreach (var kontoMitRechnugen in nachKontoGruppierteZeilen)
                 {
-                    tvErgebnis.Nodes[derzeitigesKonto].Nodes.Add(rechnung.ToString());
+                    var kontoSummeNetto = kontoMitRechnugen.Rechnungen.Sum(rechnung =>
+                        rechnung.Netto
+                    );
+                    var kontoSummeBrutto = kontoMitRechnugen.Rechnungen.Sum(rechnung =>
+                        rechnung.Brutto
+                    );
+
+                    var kontoText =
+                        $"{kontoMitRechnugen.Umsatzkonto}: {kontoSummeNetto:C2} | {kontoSummeBrutto:C2}";
+
+                    tvErgebnis.Nodes.Add(kontoText);
+
+                    foreach (var rechnung in kontoMitRechnugen.Rechnungen)
+                    {
+                        tvErgebnis.Nodes[derzeitigesKonto].Nodes.Add(rechnung.ToString());
+                    }
+
+                    derzeitigesKonto++;
                 }
 
-                derzeitigesKonto++;
-            }
-
-            tvErgebnis.EndUpdate();
+                tvErgebnis.EndUpdate();
+            });
         }
 
         private static int LängsterKundenname(List<ContactInformation> kunden) =>
@@ -161,7 +183,7 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
                         KundennameLänge = längsterKundenName,
                         Nummer = rechnung.VoucherNumber,
                         Netto = rechnung.TotalPrice.TotalNetAmount,
-                        Brutto = rechnung.TotalPrice.TotalGrossAmount
+                        Brutto = rechnung.TotalPrice.TotalGrossAmount,
                     };
                 })
                 .ToList();
@@ -195,15 +217,26 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
 
             buchungen = DienstfahrzeugUmsätzeFiltern(buchungen);
 
-            var gestellteRechnungen = await UmsätzeLaden(
-                ZeitraumAuslesen(),
-                cbxCacheNeuladen.Checked
-            );
-            var abgleichung = AbgleichBuchhaltung.FindeAbweichungenZuRechnungen(
-                buchungen,
-                gestellteRechnungen
-            );
-            AbweichungenAnzeigen(abgleichung);
+            var ergebnis = await KundenUndRechnungenLaden(
+                    ZeitraumAuslesen(),
+                    cbxCacheNeuladen.Checked
+                )
+                .Map(tuple => UmsatzlisteErstellen(tuple.Kunden, tuple.Rechnungen))
+                .Map(gestellteRechnungen =>
+                    AbgleichBuchhaltung.FindeAbweichungenZuRechnungen(
+                        buchungen,
+                        gestellteRechnungen
+                    )
+                )
+                .Tap(AbweichungenAnzeigen);
+
+            if (ergebnis.IsFailure)
+                MessageBox.Show(
+                    ergebnis.Error,
+                    "Berechnung fehlgeschlagen",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
 
             ButtonsBlockieren(false);
         }
@@ -220,26 +253,29 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
                 .OrderBy(gruppe => gruppe.Key)
                 .Select(gruppe => new { Ergebnis = gruppe.Key, Abweichungen = gruppe });
 
-            tvErgebnis.BeginUpdate();
-
-            tvErgebnis.Nodes.Clear();
-
-            var derzeitigesErgebnis = 0;
-            foreach (var abweichungenFürErgebnis in nachFehlerGruppierteAbweichungen)
+            tvErgebnis.Invoke(() =>
             {
-                tvErgebnis.Nodes.Add(abweichungenFürErgebnis.Ergebnis);
+                tvErgebnis.BeginUpdate();
 
-                foreach (var rechnung in abweichungenFürErgebnis.Abweichungen)
+                tvErgebnis.Nodes.Clear();
+
+                var derzeitigesErgebnis = 0;
+                foreach (var abweichungenFürErgebnis in nachFehlerGruppierteAbweichungen)
                 {
-                    tvErgebnis
-                        .Nodes[derzeitigesErgebnis]
-                        .Nodes.Add($"{rechnung.Rechnungsnr}: {rechnung.Fehler}");
+                    tvErgebnis.Nodes.Add(abweichungenFürErgebnis.Ergebnis);
+
+                    foreach (var rechnung in abweichungenFürErgebnis.Abweichungen)
+                    {
+                        tvErgebnis
+                            .Nodes[derzeitigesErgebnis]
+                            .Nodes.Add($"{rechnung.Rechnungsnr}: {rechnung.Fehler}");
+                    }
+
+                    derzeitigesErgebnis++;
                 }
 
-                derzeitigesErgebnis++;
-            }
-
-            tvErgebnis.EndUpdate();
+                tvErgebnis.EndUpdate();
+            });
         }
     }
 }

@@ -50,6 +50,7 @@ namespace coIT.Lexoffice.GdiExport
             tbpAccounts = new TabPage();
             spcUmsatzkontenSplit = new SplitContainer();
             tbpMiterabeiterliste = new TabPage();
+            tbpAuswertungen = new TabPage();
             tbc.SuspendLayout();
             tbpRequest.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -65,6 +66,7 @@ namespace coIT.Lexoffice.GdiExport
             tbc.Controls.Add(tbpDebitorNumber);
             tbc.Controls.Add(tbpAccounts);
             tbc.Controls.Add(tbpMiterabeiterliste);
+            tbc.Controls.Add(tbpAuswertungen);
             tbc.Dock = DockStyle.Fill;
             tbc.Location = new Point(0, 0);
             tbc.Name = "tbc";
@@ -276,7 +278,7 @@ namespace coIT.Lexoffice.GdiExport
             tbpAccounts.Padding = new Padding(3);
             tbpAccounts.Size = new Size(1256, 681);
             tbpAccounts.TabIndex = 2;
-            tbpAccounts.Text = "Umsatzkonten";
+            tbpAccounts.Text = "Umsätze";
             tbpAccounts.UseVisualStyleBackColor = true;
             // 
             // spcUmsatzkontenSplit
@@ -299,6 +301,16 @@ namespace coIT.Lexoffice.GdiExport
             tbpMiterabeiterliste.TabIndex = 3;
             tbpMiterabeiterliste.Text = "Mitarbeiter";
             tbpMiterabeiterliste.UseVisualStyleBackColor = true;
+            // 
+            // tbpAuswertungen
+            // 
+            tbpAuswertungen.Location = new Point(4, 24);
+            tbpAuswertungen.Name = "tbpAuswertungen";
+            tbpAuswertungen.Padding = new Padding(3);
+            tbpAuswertungen.Size = new Size(1256, 681);
+            tbpAuswertungen.TabIndex = 4;
+            tbpAuswertungen.Text = "Auswertungen";
+            tbpAuswertungen.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -345,5 +357,6 @@ namespace coIT.Lexoffice.GdiExport
         private GroupBox groupBox1;
         private Label lblStatistiken;
         private SplitContainer spcUmsatzkontenSplit;
+        private TabPage tbpAuswertungen;
     }
 }

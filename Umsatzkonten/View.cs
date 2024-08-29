@@ -36,7 +36,7 @@ public partial class View : UserControl
             "Ist Abrechenbar",
             "Steuerlicher Hinweis",
             "Steuerschlüssel",
-            "Steuerrate"
+            "Steuerrate",
         };
 
         dgvAccounts.SetHeadersTo(ÜberschriftenListe);

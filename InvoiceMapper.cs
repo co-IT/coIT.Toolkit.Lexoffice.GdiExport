@@ -2,12 +2,12 @@ using System.Collections.Immutable;
 using coIT.Libraries.Gdi.Accounting.Contracts;
 using coIT.Libraries.LexOffice;
 using coIT.Libraries.Lexoffice.BusinessRules.Rechnung;
+using coIT.Libraries.Toolkit.Datengrundlagen.Konten;
+using coIT.Libraries.Toolkit.Datengrundlagen.Kunden;
+using coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter;
 using CSharpFunctionalExtensions;
 using GdiInvoice = coIT.Libraries.Gdi.Accounting.Contracts.Invoice;
 using LexofficeInvoice = coIT.Libraries.LexOffice.DataContracts.Invoice.Invoice;
-using coIT.Libraries.Toolkit.Datengrundlagen.Kunden;
-using coIT.Libraries.Toolkit.Datengrundlagen.Konten;
-using coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter;
 
 namespace coIT.Toolkit.Lexoffice.GdiExport;
 
@@ -67,7 +67,7 @@ internal class InvoiceMapper
             RemoteId = lexOfficeInvoice.Id,
             DataSource = "lexoffice",
             RevenueAccountNumber = accountNumber,
-            BillingAccountNumber = accountDetails.Steuerschlüssel
+            BillingAccountNumber = accountDetails.Steuerschlüssel,
         };
     }
 }

@@ -23,7 +23,7 @@ namespace coIT.Toolkit.Lexoffice.GdiExport.Mitarbeiterliste
                 Nummer = int.Parse(clockodoBenutzer.Number),
                 Name = name,
                 Aktiv = clockodoBenutzer.Active,
-                Team = clockodoBenutzer.Team
+                Team = clockodoBenutzer.Team,
             };
         }
     }

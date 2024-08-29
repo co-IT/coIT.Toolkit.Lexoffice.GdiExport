@@ -33,23 +33,34 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
             btnCsvAuswählen = new Button();
             dlgCsvÖffnen = new OpenFileDialog();
             gbxZeitraum = new GroupBox();
-            dtpZeitraumStart = new DateTimePicker();
-            dtpZeitraumEnde = new DateTimePicker();
-            cbxCacheNeuladen = new CheckBox();
-            label1 = new Label();
-            label2 = new Label();
             btnAbfragen = new Button();
+            label2 = new Label();
+            label1 = new Label();
+            cbxCacheNeuladen = new CheckBox();
+            dtpZeitraumEnde = new DateTimePicker();
+            dtpZeitraumStart = new DateTimePicker();
             groupBox1 = new GroupBox();
+            panel1 = new Panel();
+            tabControl1 = new TabControl();
+            tbpPrüfung = new TabPage();
+            tabPage2 = new TabPage();
+            tabPage1 = new TabPage();
+            tabPage3 = new TabPage();
+            umsatzkontoKundeView = new Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.Auswertungen.UmsatzkontoKundeView();
             gbxZeitraum.SuspendLayout();
             groupBox1.SuspendLayout();
+            panel1.SuspendLayout();
+            tabControl1.SuspendLayout();
+            tbpPrüfung.SuspendLayout();
+            tabPage2.SuspendLayout();
             SuspendLayout();
             // 
             // tvErgebnis
             // 
-            tvErgebnis.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            tvErgebnis.Location = new Point(0, 153);
+            tvErgebnis.Dock = DockStyle.Fill;
+            tvErgebnis.Location = new Point(3, 3);
             tvErgebnis.Name = "tvErgebnis";
-            tvErgebnis.Size = new Size(765, 331);
+            tvErgebnis.Size = new Size(751, 295);
             tvErgebnis.TabIndex = 0;
             // 
             // tbxCsvPfad
@@ -82,26 +93,40 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
             gbxZeitraum.Controls.Add(cbxCacheNeuladen);
             gbxZeitraum.Controls.Add(dtpZeitraumEnde);
             gbxZeitraum.Controls.Add(dtpZeitraumStart);
-            gbxZeitraum.Location = new Point(12, 3);
+            gbxZeitraum.Location = new Point(3, 3);
             gbxZeitraum.Name = "gbxZeitraum";
             gbxZeitraum.Size = new Size(317, 144);
             gbxZeitraum.TabIndex = 4;
             gbxZeitraum.TabStop = false;
             gbxZeitraum.Text = "Zeitraum auswählen";
             // 
-            // dtpZeitraumStart
+            // btnAbfragen
             // 
-            dtpZeitraumStart.Location = new Point(102, 22);
-            dtpZeitraumStart.Name = "dtpZeitraumStart";
-            dtpZeitraumStart.Size = new Size(200, 23);
-            dtpZeitraumStart.TabIndex = 0;
+            btnAbfragen.Location = new Point(191, 114);
+            btnAbfragen.Name = "btnAbfragen";
+            btnAbfragen.Size = new Size(111, 23);
+            btnAbfragen.TabIndex = 5;
+            btnAbfragen.Text = "Abfrage starten";
+            btnAbfragen.UseVisualStyleBackColor = true;
+            btnAbfragen.Click += btnAbfragen_Click;
             // 
-            // dtpZeitraumEnde
+            // label2
             // 
-            dtpZeitraumEnde.Location = new Point(102, 51);
-            dtpZeitraumEnde.Name = "dtpZeitraumEnde";
-            dtpZeitraumEnde.Size = new Size(200, 23);
-            dtpZeitraumEnde.TabIndex = 1;
+            label2.Location = new Point(45, 51);
+            label2.Name = "label2";
+            label2.Size = new Size(51, 23);
+            label2.TabIndex = 4;
+            label2.Text = "Ende:";
+            label2.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // label1
+            // 
+            label1.Location = new Point(45, 22);
+            label1.Name = "label1";
+            label1.Size = new Size(51, 23);
+            label1.TabIndex = 3;
+            label1.Text = "Anfang:";
+            label1.TextAlign = ContentAlignment.MiddleRight;
             // 
             // cbxCacheNeuladen
             // 
@@ -114,52 +139,110 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
             cbxCacheNeuladen.Text = "Cache für diesen Zeitraum aktualisieren";
             cbxCacheNeuladen.UseVisualStyleBackColor = true;
             // 
-            // label1
+            // dtpZeitraumEnde
             // 
-            label1.Location = new Point(45, 22);
-            label1.Name = "label1";
-            label1.Size = new Size(51, 23);
-            label1.TabIndex = 3;
-            label1.Text = "Anfang:";
-            label1.TextAlign = ContentAlignment.MiddleRight;
+            dtpZeitraumEnde.Location = new Point(102, 51);
+            dtpZeitraumEnde.Name = "dtpZeitraumEnde";
+            dtpZeitraumEnde.Size = new Size(200, 23);
+            dtpZeitraumEnde.TabIndex = 1;
             // 
-            // label2
+            // dtpZeitraumStart
             // 
-            label2.Location = new Point(45, 51);
-            label2.Name = "label2";
-            label2.Size = new Size(51, 23);
-            label2.TabIndex = 4;
-            label2.Text = "Ende:";
-            label2.TextAlign = ContentAlignment.MiddleRight;
-            // 
-            // btnAbfragen
-            // 
-            btnAbfragen.Location = new Point(191, 114);
-            btnAbfragen.Name = "btnAbfragen";
-            btnAbfragen.Size = new Size(111, 23);
-            btnAbfragen.TabIndex = 5;
-            btnAbfragen.Text = "Abfrage starten";
-            btnAbfragen.UseVisualStyleBackColor = true;
-            btnAbfragen.Click += btnAbfragen_Click;
+            dtpZeitraumStart.Location = new Point(102, 22);
+            dtpZeitraumStart.Name = "dtpZeitraumStart";
+            dtpZeitraumStart.Size = new Size(200, 23);
+            dtpZeitraumStart.TabIndex = 0;
             // 
             // groupBox1
             // 
             groupBox1.Controls.Add(tbxCsvPfad);
             groupBox1.Controls.Add(btnCsvAuswählen);
-            groupBox1.Location = new Point(335, 3);
+            groupBox1.Location = new Point(326, 3);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(385, 144);
             groupBox1.TabIndex = 6;
             groupBox1.TabStop = false;
             groupBox1.Text = "Abgefragten Zeitraum mit GDI abgleichen";
             // 
+            // panel1
+            // 
+            panel1.Controls.Add(gbxZeitraum);
+            panel1.Controls.Add(groupBox1);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(765, 155);
+            panel1.TabIndex = 8;
+            // 
+            // tabControl1
+            // 
+            tabControl1.Controls.Add(tbpPrüfung);
+            tabControl1.Controls.Add(tabPage2);
+            tabControl1.Controls.Add(tabPage1);
+            tabControl1.Controls.Add(tabPage3);
+            tabControl1.Dock = DockStyle.Fill;
+            tabControl1.Location = new Point(0, 155);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(765, 329);
+            tabControl1.TabIndex = 9;
+            // 
+            // tbpPrüfung
+            // 
+            tbpPrüfung.Controls.Add(tvErgebnis);
+            tbpPrüfung.Location = new Point(4, 24);
+            tbpPrüfung.Name = "tbpPrüfung";
+            tbpPrüfung.Padding = new Padding(3);
+            tbpPrüfung.Size = new Size(757, 301);
+            tbpPrüfung.TabIndex = 0;
+            tbpPrüfung.Text = "Umsatzkonten Prüfung";
+            tbpPrüfung.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            tabPage2.Controls.Add(umsatzkontoKundeView);
+            tabPage2.Location = new Point(4, 24);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(757, 301);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "Konto Kunde";
+            tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // tabPage1
+            // 
+            tabPage1.Location = new Point(4, 24);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(757, 301);
+            tabPage1.TabIndex = 2;
+            tabPage1.Text = "Kunde Konto";
+            tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage3
+            // 
+            tabPage3.Location = new Point(4, 24);
+            tabPage3.Name = "tabPage3";
+            tabPage3.Padding = new Padding(3);
+            tabPage3.Size = new Size(757, 301);
+            tabPage3.TabIndex = 3;
+            tabPage3.Text = "Kunde Mitarbeiter";
+            tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // umsatzkontoKundeView
+            // 
+            umsatzkontoKundeView.Dock = DockStyle.Fill;
+            umsatzkontoKundeView.Location = new Point(3, 3);
+            umsatzkontoKundeView.Name = "umsatzkontoKundeView";
+            umsatzkontoKundeView.Size = new Size(751, 295);
+            umsatzkontoKundeView.TabIndex = 0;
+            // 
             // UmsatzkontenprüfungControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(groupBox1);
-            Controls.Add(gbxZeitraum);
-            Controls.Add(tvErgebnis);
+            Controls.Add(tabControl1);
+            Controls.Add(panel1);
             Name = "UmsatzkontenprüfungControl";
             Size = new Size(765, 484);
             Load += UmsatzkontenprüfungControl_Load;
@@ -167,6 +250,10 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
             gbxZeitraum.PerformLayout();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
+            panel1.ResumeLayout(false);
+            tabControl1.ResumeLayout(false);
+            tbpPrüfung.ResumeLayout(false);
+            tabPage2.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -184,5 +271,12 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
         private DateTimePicker dtpZeitraumEnde;
         private DateTimePicker dtpZeitraumStart;
         private GroupBox groupBox1;
+        private Panel panel1;
+        private TabControl tabControl1;
+        private TabPage tbpPrüfung;
+        private TabPage tabPage2;
+        private TabPage tabPage1;
+        private TabPage tabPage3;
+        private Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.Auswertungen.UmsatzkontoKundeView umsatzkontoKundeView;
     }
 }

@@ -39,7 +39,7 @@ internal static class KundenMapper
             Zip = kunde.Postleitzahl,
             City = kunde.Stadt,
             Country = kunde.Land,
-            CountryCode = GdiLkzFürSteuerklassifikation(kunde.Ländersteuerklassifizierung)
+            CountryCode = GdiLkzFürSteuerklassifikation(kunde.Ländersteuerklassifizierung),
         };
 
         return new Customer
@@ -47,7 +47,7 @@ internal static class KundenMapper
             Name = kunde.DebitorName,
             Number = kunde.Debitorennummer,
             Address = address,
-            Type = KundenTyp(kunde.Typ)
+            Type = KundenTyp(kunde.Typ),
         };
     }
 
@@ -67,7 +67,7 @@ internal static class KundenMapper
         {
             "Markt" => CustomerType.Market,
             "Verbund" => CustomerType.Network,
-            _ => CustomerType.Internal
+            _ => CustomerType.Internal,
         };
     }
 }

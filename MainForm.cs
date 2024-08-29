@@ -31,6 +31,8 @@ public partial class MainForm : Form
     private Leistungsempfänger _leistungsempfänger;
     private LexofficeService _lexofficeService;
     private List<Mitarbeiter> _mitarbeiterListe;
+    private EnvironmentManager _environmentManager;
+    private FileSystemManager _filesystemManager;
 
     public MainForm()
     {
@@ -90,14 +92,14 @@ public partial class MainForm : Form
             )
             .Value;
         var serializationService = new NewtonsoftJsonSerializer();
-        var environmentManager = new EnvironmentManager(cryptoService, serializationService);
-        var filesystemManager = new FileSystemManager();
+        _environmentManager = new EnvironmentManager(cryptoService, serializationService);
+        _filesystemManager = new FileSystemManager();
 
-        var konfigurationKorrektGesetzt = await environmentManager
+        var konfigurationKorrektGesetzt = await _environmentManager
             .Get<Konfiguration>()
-            .BindZip(_ => filesystemManager.GetPathFor<KundenstammDaten>())
-            .BindZip((_, _) => filesystemManager.GetPathFor<UmsatzkontenListe>())
-            .BindZip((_, _, _) => filesystemManager.GetPathFor<MitarbeiterListe>());
+            .BindZip(_ => _filesystemManager.GetPathFor<KundenstammDaten>())
+            .BindZip((_, _) => _filesystemManager.GetPathFor<UmsatzkontenListe>())
+            .BindZip((_, _, _) => _filesystemManager.GetPathFor<MitarbeiterListe>());
 
         if (konfigurationKorrektGesetzt.IsSuccess)
         {
@@ -111,7 +113,7 @@ public partial class MainForm : Form
         }
         else
         {
-            await NeueKonfigurationDurchführen(environmentManager, filesystemManager);
+            await NeueKonfigurationDurchführen(_environmentManager, _filesystemManager);
         }
     }
 
@@ -197,7 +199,10 @@ public partial class MainForm : Form
         spcUmsatzkontenSplit.Panel1.Controls.Add(accountControl);
         accountControl.Dock = DockStyle.Fill;
 
-        var umsatzkontenControl = new UmsatzkontenprüfungControl(_lexofficeService);
+        var umsatzkontenControl = new UmsatzkontenprüfungControl(
+            _environmentManager,
+            _filesystemManager
+        );
         spcUmsatzkontenSplit.Panel2.Controls.Add(umsatzkontenControl);
         umsatzkontenControl.Dock = DockStyle.Fill;
     }
