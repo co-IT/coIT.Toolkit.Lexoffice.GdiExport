@@ -1,9 +1,12 @@
 using System.Data;
+using coIT.Libraries.Clockodo.TimeEntries;
+using coIT.Libraries.Clockodo.TimeEntries.Contracts;
 using coIT.Libraries.ConfigurationManager;
 using coIT.Libraries.Gdi.Accounting;
 using coIT.Libraries.Gdi.Accounting.Contracts;
 using coIT.Libraries.LexOffice;
 using coIT.Libraries.LexOffice.DataContracts.Contacts;
+using coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter;
 using coIT.Libraries.WinForms.DateTimeButtons;
 using coIT.Toolkit.Lexoffice.GdiExport;
 using coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung;
@@ -70,7 +73,15 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
             var cacheAktualisieren = cbxCacheNeuladen.Checked;
 
             var ergebnis = await KundenUndRechnungenLaden(zeitraum, cacheAktualisieren)
-                .Map(tuple => UmsatzlisteErstellen(tuple.Kunden, tuple.Rechnungen))
+                .BindZip(tuple => MitarbeiterLaden())
+                .Tap(tuple =>
+                    kundeMitarbeiterView.Aktualisieren(
+                        tuple.First.Rechnungen,
+                        tuple.First.Kunden,
+                        tuple.Second
+                    )
+                )
+                .Map(tuple => UmsatzlisteErstellen(tuple.First.Kunden, tuple.First.Rechnungen))
                 .Tap(UmsätzeAnzeigen)
                 .Tap(umsatzkontoKundeView.Aktualisieren)
                 .Tap(kundeUmsatzkontoView.Aktualisieren);
@@ -84,6 +95,29 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
                 );
 
             ButtonsBlockieren(false);
+        }
+
+        private async Task<Result<MitarbeiterListe>> MitarbeiterLaden()
+        {
+            return await _environmentManager
+                .Get<Konfiguration>()
+                .Map(einstellungen => new TimeEntriesService(
+                    einstellungen.ClockodoKonfigurationErhalten()
+                ))
+                .Map((clockodoService) => clockodoService.GetAllUsers())
+                .Map((clockodoMitarbeiter) => clockodoMitarbeiter.ToList())
+                .BindZip((_) => _fileSystemManager.Get<MitarbeiterListe>())
+                .Map(
+                    (
+                        (
+                            List<UserWithTeam> ClockodoMitarbeiter,
+                            MitarbeiterListe MitarbeiterListe
+                        ) ergebnisse
+                    ) =>
+                        ergebnisse.MitarbeiterListe.ClockodoMitarbeiterHinzufügen(
+                            ergebnisse.ClockodoMitarbeiter
+                        )
+                );
         }
 
         private void ButtonsBlockieren(bool blockieren)

@@ -23,6 +23,9 @@
     <Compile Update="LadeForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Umsatzkontenprüfung\Auswertungen\KundeMitarbeiterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Umsatzkontenprüfung\Auswertungen\KundeUmsatzkontoView.cs">
       <SubType>UserControl</SubType>
     </Compile>

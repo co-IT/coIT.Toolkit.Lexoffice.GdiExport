@@ -1,8 +1,6 @@
-using coIT.Libraries.LexOffice.DataContracts.Contacts;
 using CSharpFunctionalExtensions;
 using Krypton.Toolkit;
 using Krypton.Toolkit.Suite.Extended.TreeGridView;
-using LexOfficeInvoice = coIT.Libraries.LexOffice.DataContracts.Invoice.Invoice;
 
 namespace coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.Auswertungen
 {
