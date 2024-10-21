@@ -1,5 +1,7 @@
+using Azure;
 using coIT.Libraries.Clockodo.TimeEntries.Contracts;
 using coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter;
+using Team = coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter.Team;
 
 namespace coIT.Toolkit.Lexoffice.GdiExport.Mitarbeiterliste
 {
@@ -18,13 +20,7 @@ namespace coIT.Toolkit.Lexoffice.GdiExport.Mitarbeiterliste
         {
             var name = clockodoBenutzer.Name.Split(":")[1].Trim();
 
-            return new Mitarbeiter()
-            {
-                Nummer = int.Parse(clockodoBenutzer.Number),
-                Name = name,
-                Aktiv = clockodoBenutzer.Active,
-                Team = clockodoBenutzer.Team,
-            };
+            return new Mitarbeiter(int.Parse(clockodoBenutzer.Number), name, clockodoBenutzer.Active, new Team{Id = clockodoBenutzer.Team.Id, Name = clockodoBenutzer.Team.Name}, null, ETag.All);
         }
     }
 }

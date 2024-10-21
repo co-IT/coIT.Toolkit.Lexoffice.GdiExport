@@ -43,7 +43,7 @@ namespace coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.Auswertungen
         public void Aktualisieren(
             IEnumerable<Invoice> rechnungen,
             List<ContactInformation> kunden,
-            MitarbeiterListe mitarbeiterListe
+            List<Mitarbeiter> mitarbeiterListe
         )
         {
             if (treeGridView.InvokeRequired)
@@ -107,7 +107,7 @@ namespace coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.Auswertungen
         private IEnumerable<ErweiterteRechnungszeile> ErweiterteRechnungszeilenBerechnen(
             IEnumerable<Invoice> rechnungen,
             List<ContactInformation> kunden,
-            MitarbeiterListe mitarbeiterListe
+            List<Mitarbeiter> mitarbeiterListe
         )
         {
             foreach (var rechnung in rechnungen)
@@ -145,7 +145,7 @@ namespace coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.Auswertungen
             }
         }
 
-        private string MitarbeiterNameErmitteln(MitarbeiterListe mitarbeiter, int nummer)
+        private string MitarbeiterNameErmitteln(List<Mitarbeiter> mitarbeiter, int nummer)
         {
             return mitarbeiter
                     .Where(mitarbeiter => mitarbeiter.Nummer == nummer)

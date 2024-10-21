@@ -1,22 +1,21 @@
 using coIT.Libraries.Gdi.Accounting.Contracts;
 using coIT.Libraries.LexOffice;
-using coIT.Libraries.Toolkit.Datengrundlagen.Kunden;
-using coIT.Toolkit.Lexoffice.GdiExport.Helpers;
+using coIT.Libraries.Toolkit.Datengrundlagen.KundenRelation;
+using CSharpFunctionalExtensions;
 
 namespace coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm
 {
     public class Leistungsempfänger
     {
-        private readonly List<Kunde> _kundenListe;
-        private readonly JsonRepository<Kunde> _kundenRepository;
+        private readonly List<KundeRelation> _kundenListe;
+        private readonly IKundeRepository _kundenRepository;
 
         public static async Task<Leistungsempfänger> VonDateiUndLexoffice(
             LexofficeService lexOfficeService,
-            string kundenListePfad
+            IKundeRepository kundenRepository
         )
         {
-            var kundenRepository = new JsonRepository<Kunde>(kundenListePfad);
-            var lokalGespeicherteKunden = await kundenRepository.List();
+            var lokalGespeicherteKunden = (await kundenRepository.GetAll()).Value;
 
             var lexOfficeKontakte = await lexOfficeService.GetContactsAsync();
 
@@ -34,9 +33,9 @@ namespace coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm
         }
 
         private Leistungsempfänger(
-            IList<Kunde> lokalGespeicherteKunden,
-            JsonRepository<Kunde> kundenRepository,
-            IList<Kunde> externGespeicherteLeistungsempfänger
+            IReadOnlyList<KundeRelation> lokalGespeicherteKunden,
+            IKundeRepository kundenRepository,
+            IList<KundeRelation> externGespeicherteLeistungsempfänger
         )
         {
             _kundenListe = ExportKundenMerger.MergenUndAnreichern(
@@ -46,16 +45,16 @@ namespace coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm
             _kundenRepository = kundenRepository;
         }
 
-        public List<Kunde> HoleKundenListe() => _kundenListe;
+        public List<KundeRelation> HoleKundenListe() => _kundenListe;
 
         public List<Customer> HoleGdiKundenListe()
         {
             return HoleKundenListe().ZuGdiKunden();
         }
 
-        public void SpeichereÄnderungen()
+        public async Task<Result> UpdateKunde(KundeRelation kunde)
         {
-            _kundenRepository.Save(_kundenListe);
+            return await _kundenRepository.UpsertAsync(kunde);
         }
     }
 }

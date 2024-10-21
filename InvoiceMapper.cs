@@ -2,9 +2,9 @@ using System.Collections.Immutable;
 using coIT.Libraries.Gdi.Accounting.Contracts;
 using coIT.Libraries.LexOffice;
 using coIT.Libraries.Lexoffice.BusinessRules.Rechnung;
-using coIT.Libraries.Toolkit.Datengrundlagen.Konten;
-using coIT.Libraries.Toolkit.Datengrundlagen.Kunden;
+using coIT.Libraries.Toolkit.Datengrundlagen.KundenRelation;
 using coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter;
+using coIT.Libraries.Toolkit.Datengrundlagen.Umsatzkonten;
 using CSharpFunctionalExtensions;
 using GdiInvoice = coIT.Libraries.Gdi.Accounting.Contracts.Invoice;
 using LexofficeInvoice = coIT.Libraries.LexOffice.DataContracts.Invoice.Invoice;
@@ -13,13 +13,13 @@ namespace coIT.Toolkit.Lexoffice.GdiExport;
 
 internal class InvoiceMapper
 {
-    private readonly IEnumerable<Kunde> _customers;
-    private readonly IEnumerable<KontoDetails> _accounts;
+    private readonly IEnumerable<KundeRelation> _customers;
+    private readonly IEnumerable<Umsatzkonto> _accounts;
     private readonly AlleRechnungsregeln _rechnungsRegelen;
 
     internal InvoiceMapper(
-        IEnumerable<Kunde> customers,
-        IEnumerable<KontoDetails> accounts,
+        IEnumerable<KundeRelation> customers,
+        IEnumerable<Umsatzkonto> accounts,
         IEnumerable<Mitarbeiter> mitarbeiter
     )
     {
@@ -62,7 +62,7 @@ internal class InvoiceMapper
             NetAmount = lexOfficeInvoice.TotalPrice.TotalNetAmount,
             GrossAmount = lexOfficeInvoice.TotalPrice.TotalGrossAmount,
             TaxAmount = lexOfficeInvoice.TotalPrice.TotalTaxAmount,
-            DebitorNumber = exportCustomer?.Debitorennummer ?? -1,
+            DebitorNumber = exportCustomer?.DebitorenNummer ?? -1,
             DebitorName = exportCustomer?.DebitorName ?? "Unbekannt",
             RemoteId = lexOfficeInvoice.Id,
             DataSource = "lexoffice",

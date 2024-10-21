@@ -1,4 +1,4 @@
-using System.Data;
+using Azure;
 using coIT.Libraries.Clockodo.TimeEntries;
 using coIT.Libraries.Clockodo.TimeEntries.Contracts;
 using coIT.Libraries.ConfigurationManager;
@@ -8,27 +8,26 @@ using coIT.Libraries.LexOffice;
 using coIT.Libraries.LexOffice.DataContracts.Contacts;
 using coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter;
 using coIT.Libraries.WinForms.DateTimeButtons;
-using coIT.Toolkit.Lexoffice.GdiExport;
-using coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung;
 using coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung.LexofficeCaching;
 using CSharpFunctionalExtensions;
 using LexOfficeInvoice = coIT.Libraries.LexOffice.DataContracts.Invoice.Invoice;
+using Team = coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter.Team;
 
-namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
+namespace coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung
 {
     internal partial class UmsatzkontenprüfungControl : UserControl
     {
-        private readonly EnvironmentManager _environmentManager;
-        private readonly FileSystemManager _fileSystemManager;
+        private readonly IMitarbeiterRepository _mitarbeiterRepository;
+        private readonly Konfiguration _konfiguration;
 
         internal UmsatzkontenprüfungControl(
-            EnvironmentManager environmentManager,
-            FileSystemManager fileSystemManager
+            IMitarbeiterRepository mitarbeiterRepository,
+            Konfiguration konfiguration
         )
         {
             InitializeComponent();
-            _environmentManager = environmentManager;
-            _fileSystemManager = fileSystemManager;
+            _mitarbeiterRepository = mitarbeiterRepository;
+            _konfiguration = konfiguration;
         }
 
         private async void btnAbfragen_Click(object sender, EventArgs e)
@@ -72,8 +71,8 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
             var zeitraum = ZeitraumAuslesen();
             var cacheAktualisieren = cbxCacheNeuladen.Checked;
 
-            var ergebnis = await KundenUndRechnungenLaden(zeitraum, cacheAktualisieren)
-                .BindZip(tuple => MitarbeiterLaden())
+            var ergebnis = await KundenUndRechnungenLaden(_konfiguration, zeitraum, cacheAktualisieren)
+                .BindZip(tuple => MitarbeiterLaden(_konfiguration))
                 .Tap(tuple =>
                     kundeMitarbeiterView.Aktualisieren(
                         tuple.First.Rechnungen,
@@ -97,27 +96,52 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
             ButtonsBlockieren(false);
         }
 
-        private async Task<Result<MitarbeiterListe>> MitarbeiterLaden()
+        private async Task<Result<List<Mitarbeiter>>> MitarbeiterLaden(Konfiguration konfiguration)
         {
-            return await _environmentManager
-                .Get<Konfiguration>()
+            return await Result
+                .Success(konfiguration)
                 .Map(einstellungen => new TimeEntriesService(
                     einstellungen.ClockodoKonfigurationErhalten()
                 ))
                 .Map((clockodoService) => clockodoService.GetAllUsers())
                 .Map((clockodoMitarbeiter) => clockodoMitarbeiter.ToList())
-                .BindZip((_) => _fileSystemManager.Get<MitarbeiterListe>())
+                .BindZip((_) => _mitarbeiterRepository.GetAll())
                 .Map(
                     (
                         (
                             List<UserWithTeam> ClockodoMitarbeiter,
-                            MitarbeiterListe MitarbeiterListe
-                        ) ergebnisse
+                            IReadOnlyList<Mitarbeiter> MitarbeiterListe
+                            ) ergebnisse
                     ) =>
-                        ergebnisse.MitarbeiterListe.ClockodoMitarbeiterHinzufügen(
+                    {
+                        ClockodoMitarbeiterHinzufügen(
+                            ergebnisse.MitarbeiterListe.ToList(),
                             ergebnisse.ClockodoMitarbeiter
-                        )
+                        );
+
+                        return ergebnisse.MitarbeiterListe.ToList();
+                    }
                 );
+        }
+
+        private void ClockodoMitarbeiterHinzufügen(List<Mitarbeiter> mitarbeiterListe, List<UserWithTeam> clockodoBenutzer)
+        {
+            var adminNutzerId = 350599;
+            var clockodoMitarbeiter = clockodoBenutzer
+                .Where(user => user.Id != adminNutzerId)
+                .Select(ZuMitarbeiter)
+                .ToList();
+
+            mitarbeiterListe.AddRange(clockodoMitarbeiter);
+        }
+
+        private static Mitarbeiter ZuMitarbeiter(UserWithTeam clockodoBenutzer)
+        {
+            var name = clockodoBenutzer.Name.Split(":")[1].Trim();
+            var nummer = clockodoBenutzer.Name.Split(":")[0].Trim();
+            return new Mitarbeiter(int.Parse(nummer), name, clockodoBenutzer.Active,
+                new Team { Id = clockodoBenutzer.Team.Id, Name = clockodoBenutzer.Team.Name }, null,
+                ETag.All);
         }
 
         private void ButtonsBlockieren(bool blockieren)
@@ -128,10 +152,10 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
 
         private async Task<
             Result<(List<ContactInformation> Kunden, List<LexOfficeInvoice> Rechnungen)>
-        > KundenUndRechnungenLaden((DateOnly Von, DateOnly Bis) zeitraum, bool cacheAktualisieren)
+        > KundenUndRechnungenLaden(Konfiguration konfiguration, (DateOnly Von, DateOnly Bis) zeitraum, bool cacheAktualisieren)
         {
-            return await _environmentManager
-                .Get<Konfiguration>()
+            return await Result
+                .Success(konfiguration)
                 .Map(konfiguration => new LexofficeService(konfiguration.LexofficeKey))
 #if DEBUG
                 .Map(ErweiterterDateisystemCache.LadeCacheAusLokalerDatei)
@@ -253,6 +277,7 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkontenprüfung
             buchungen = DienstfahrzeugUmsätzeFiltern(buchungen);
 
             var ergebnis = await KundenUndRechnungenLaden(
+                    _konfiguration,
                     ZeitraumAuslesen(),
                     cbxCacheNeuladen.Checked
                 )

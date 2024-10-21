@@ -1,17 +1,17 @@
 using coIT.Libraries.LexOffice.DataContracts.Country;
-using coIT.Libraries.Toolkit.Datengrundlagen.Kunden;
+using coIT.Libraries.Toolkit.Datengrundlagen.KundenRelation;
 
-namespace coIT.Lexoffice.GdiExport.Kundenstamm
+namespace coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm
 {
     internal partial class Edit : Form
     {
-        private readonly Kunde _customer;
+        public KundeRelation Customer;
         private readonly List<CountryInformation> _countries;
 
-        internal Edit(Kunde customer, List<CountryInformation> countries)
+        internal Edit(KundeRelation customer, List<CountryInformation> countries)
         {
             InitializeComponent();
-            _customer = customer;
+            Customer = customer;
             _countries = countries.OrderBy(country => country.Name).ToList();
         }
 
@@ -20,37 +20,31 @@ namespace coIT.Lexoffice.GdiExport.Kundenstamm
             foreach (var country in _countries.Select(country => country.Name))
                 cbxLand.Items.Add(country);
 
-            tbxName.Text = _customer.DebitorName;
-            nbxKundennummer.Value = _customer.Kundennummer;
-            nbxDebitorennummer.Value = _customer.Debitorennummer;
-            cbxKundenart.Text = _customer.Typ;
+            tbxName.Text = Customer.DebitorName;
+            nbxKundennummer.Value = Customer.Kundennummer;
+            nbxDebitorennummer.Value = Customer.DebitorenNummer;
+            cbxKundenart.Text = Customer.Typ;
 
-            cbxLand.Text = _customer.Land;
-            tbxStraße.Text = _customer.Straße;
-            tbxPostleitzahl.Text = _customer.Postleitzahl;
-            tbxStadt.Text = _customer.Stadt;
-
-            if (!_customer.LoadedFromFile)
-            {
-                tbxName.Enabled = false;
-                tbxStraße.Enabled = false;
-                tbxPostleitzahl.Enabled = false;
-                tbxStadt.Enabled = false;
-                cbxLand.Enabled = false;
-            }
+            cbxLand.Text = Customer.Land;
+            tbxStraße.Text = Customer.Straße;
+            tbxPostleitzahl.Text = Customer.Postleitzahl;
+            tbxStadt.Text = Customer.Stadt;
         }
 
-        public void StoreChanges()
+        private void StoreChanges()
         {
-            _customer.DebitorName = tbxName.Text;
-            _customer.Kundennummer = (int)nbxKundennummer.Value;
-            _customer.Debitorennummer = (int)nbxDebitorennummer.Value;
-            _customer.Typ = cbxKundenart.Text;
+            Customer = Customer with
+            {
+                DebitorName = tbxName.Text,
+                Kundennummer = (int)nbxKundennummer.Value,
+                DebitorenNummer = (int)nbxDebitorennummer.Value,
+                Typ = cbxKundenart.Text,
 
-            _customer.Land = cbxLand.Text;
-            _customer.Straße = tbxStraße.Text;
-            _customer.Postleitzahl = tbxPostleitzahl.Text;
-            _customer.Stadt = tbxStadt.Text;
+                Land = cbxLand.Text,
+                Straße = tbxStraße.Text,
+                Postleitzahl = tbxPostleitzahl.Text,
+                Stadt = tbxStadt.Text,
+            };
         }
 
         private void btnSave_Click(object sender, EventArgs e)

@@ -1,4 +1,5 @@
-using coIT.Libraries.Toolkit.Datengrundlagen.Kunden;
+
+using coIT.Libraries.Toolkit.Datengrundlagen.KundenRelation;
 
 namespace coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm.Filter
 {
@@ -6,7 +7,7 @@ namespace coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm.Filter
     {
         public Dictionary<Type, IFilterKunde> AktiveFilter { get; set; } = new();
 
-        public IEnumerable<Kunde> Anwenden(IEnumerable<Kunde> kunden)
+        public IEnumerable<KundeRelation> Anwenden(IEnumerable<KundeRelation> kunden)
         {
             foreach (var filter in AktiveFilter)
                 kunden = filter.Value.KriteriumTrifftZu(kunden);

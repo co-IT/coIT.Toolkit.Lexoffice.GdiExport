@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using coIT.Lexoffice.GdiExport;
 
 namespace coIT.Toolkit.Lexoffice.GdiExport
 {

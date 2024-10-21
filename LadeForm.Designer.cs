@@ -1,4 +1,4 @@
-namespace coIT.Clockodo.QuickActions
+namespace coIT.Toolkit.Lexoffice.GdiExport
 {
     partial class LadeForm
     {

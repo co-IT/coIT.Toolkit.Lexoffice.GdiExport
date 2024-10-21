@@ -1,4 +1,4 @@
-﻿namespace coIT.Lexoffice.GdiExport.Umsatzkonten
+﻿namespace coIT.Toolkit.Lexoffice.GdiExport.Umsatzkonten
 {
     partial class Bearbeiten
     {
