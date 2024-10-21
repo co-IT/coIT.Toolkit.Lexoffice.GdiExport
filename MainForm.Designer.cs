@@ -1,4 +1,4 @@
-namespace coIT.Lexoffice.GdiExport
+namespace coIT.Toolkit.Lexoffice.GdiExport
 {
     partial class MainForm
     {

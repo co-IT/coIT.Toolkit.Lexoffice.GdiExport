@@ -1,4 +1,4 @@
-﻿namespace coIT.Lexoffice.GdiExport.Kundenstamm
+﻿namespace coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm
 {
     partial class View
     {

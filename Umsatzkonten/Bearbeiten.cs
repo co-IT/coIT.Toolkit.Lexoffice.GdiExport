@@ -1,10 +1,10 @@
-using coIT.Libraries.Toolkit.Datengrundlagen.Konten;
+using coIT.Libraries.Toolkit.Datengrundlagen.Umsatzkonten;
 
-namespace coIT.Lexoffice.GdiExport.Umsatzkonten
+namespace coIT.Toolkit.Lexoffice.GdiExport.Umsatzkonten
 {
     internal partial class Bearbeiten : Form
     {
-        internal Bearbeiten(KontoDetails kontoDetails, List<int> benutzteKontonummern)
+        internal Bearbeiten(Umsatzkonto kontoDetails, List<int> benutzteKontonummern)
         {
             InitializeComponent();
             KontoDetails = kontoDetails;
@@ -13,7 +13,7 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkonten
 
         private List<int> BenutzteKontonummern { get; }
 
-        private KontoDetails KontoDetails { get; }
+        public Umsatzkonto KontoDetails { get; set; }
 
         private void FormEditAccount_Load(object sender, EventArgs e)
         {
@@ -35,15 +35,18 @@ namespace coIT.Lexoffice.GdiExport.Umsatzkonten
 
         private void SpeichereÄnderungen()
         {
-            KontoDetails.KontoName = ctrl_Kontoname.Text;
-            KontoDetails.KontoNummer = (int)nbx_Kontonummer.Value;
-            KontoDetails.KalkulatorischesKonto = (int)nbx_KalkulatorischesKonto.Value;
-            KontoDetails.Geschäftssparte = ctrl_Geschäftssparte.Text;
-            KontoDetails.IstBeratung = cb_IstBeratung.Checked;
-            KontoDetails.IstAbrechenbar = cb_IstAbrechenbar.Checked;
-            KontoDetails.SteuerlicherHinweis = ctrl_SteuerlicherHinweis.Text;
-            KontoDetails.Steuerschlüssel = (int)nbx_Steuerschlüssel.Value;
-            KontoDetails.Steuerrate = (decimal)nbx_Steuerrate.Value;
+            KontoDetails = KontoDetails with
+            {
+                KontoName = ctrl_Kontoname.Text,
+                KontoNummer = (int)nbx_Kontonummer.Value,
+                KalkulatorischesKonto = (int)nbx_KalkulatorischesKonto.Value,
+                Geschäftssparte = ctrl_Geschäftssparte.Text,
+                IstBeratung = cb_IstBeratung.Checked,
+                IstAbrechenbar = cb_IstAbrechenbar.Checked,
+                SteuerlicherHinweis = ctrl_SteuerlicherHinweis.Text,
+                Steuerschlüssel = (int)nbx_Steuerschlüssel.Value,
+                Steuerrate = (float)nbx_Steuerrate.Value,
+            };
         }
 
         private void ctrl_Speichern_Click(object sender, EventArgs e)

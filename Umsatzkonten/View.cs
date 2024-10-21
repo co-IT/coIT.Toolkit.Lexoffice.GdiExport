@@ -1,15 +1,15 @@
-using coIT.Libraries.Toolkit.Datengrundlagen.Konten;
+using coIT.Libraries.Toolkit.Datengrundlagen.Umsatzkonten;
 using coIT.Libraries.WinForms;
-using coIT.Toolkit.Lexoffice.GdiExport.Helpers;
+using CSharpFunctionalExtensions;
 
-namespace coIT.Lexoffice.GdiExport.Umsatzkonten;
+namespace coIT.Toolkit.Lexoffice.GdiExport.Umsatzkonten;
 
 public partial class View : UserControl
 {
-    private SortableBindingList<KontoDetails> _kontoDetailListe;
-    private readonly JsonRepository<KontoDetails> _repository;
+    private SortableBindingList<Umsatzkonto> _kontoDetailListe;
+    private readonly IKontoRepository _repository;
 
-    internal View(JsonRepository<KontoDetails> kontoRepository)
+    internal View(IKontoRepository kontoRepository)
     {
         InitializeComponent();
         dgvAccounts.ConfigureWithDefaultBehaviour();
@@ -18,14 +18,19 @@ public partial class View : UserControl
 
     private async void AccountControl_Load(object sender, EventArgs e)
     {
-        var debitorDetailsList = await _repository.List();
-        _kontoDetailListe = new SortableBindingList<KontoDetails>(debitorDetailsList);
+        var debitorDetailsList = (await _repository.GetAll()).Value;
+        _kontoDetailListe = new SortableBindingList<Umsatzkonto>(debitorDetailsList.ToList());
         dgvAccounts.DataSource = _kontoDetailListe;
+        dgvAccounts.AutoGenerateColumns = false;
         SetzeÜberschriften();
     }
 
     private void SetzeÜberschriften()
     {
+        dgvAccounts.Columns.Remove("Id");
+        dgvAccounts.Columns.Remove("Timestamp");
+        dgvAccounts.Columns.Remove("ETag");
+
         var ÜberschriftenListe = new List<string>()
         {
             "Kontoname",
@@ -44,10 +49,10 @@ public partial class View : UserControl
 
     private void dgvAccounts_DoubleClick(object sender, EventArgs e)
     {
-        dgvAccounts.ExecuteWithSelectedItem<KontoDetails>(Bearbeiten);
+        dgvAccounts.ExecuteWithSelectedItem<Umsatzkonto>((x) => Bearbeiten(x));
     }
 
-    private void Bearbeiten(KontoDetails konto)
+    private async Task Bearbeiten(Umsatzkonto konto)
     {
         var otherAccountNumbers = _kontoDetailListe
             .Where(kontoDetails => kontoDetails != konto)
@@ -60,14 +65,19 @@ public partial class View : UserControl
         if (editResult != DialogResult.OK)
             return;
 
-        SpeicherÄnderungen();
+        var updatedKonto = editForm.KontoDetails;
+
+        var upsertResult = await _repository.UpsertAsync(updatedKonto);
+
+        if (upsertResult.IsFailure)
+        {
+            MessageBox.Show(upsertResult.Error);
+            return;
+        }
+
+        var index = _kontoDetailListe.IndexOf(konto);
+        _kontoDetailListe[index] = updatedKonto;
+
         dgvAccounts.Invalidate();
-    }
-
-    private void SpeicherÄnderungen()
-    {
-        var aenderungen = dgvAccounts.BindList<KontoDetails>();
-
-        _repository.Save(aenderungen);
     }
 }

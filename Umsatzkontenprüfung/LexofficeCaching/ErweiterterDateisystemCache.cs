@@ -1,5 +1,4 @@
 using System.Text;
-using coIT.Lexoffice.GdiExport.Kundenstamm;
 using coIT.Libraries.LexOffice;
 using coIT.Libraries.LexOffice.DataContracts.Contacts;
 using coIT.Libraries.LexOffice.DataContracts.Invoice;

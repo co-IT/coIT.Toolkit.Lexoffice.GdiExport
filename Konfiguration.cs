@@ -5,12 +5,14 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
 {
     public class Konfiguration
     {
+        public string DatabaseConnectionString { get; }
         public string LexofficeKey { get; }
         public string ClockodoMail { get; }
         public string ClockodoToken { get; }
 
-        public Konfiguration(string lexofficeKey, string clockodoMail, string clockodoToken)
+        public Konfiguration(string databaseConnectionString, string lexofficeKey, string clockodoMail, string clockodoToken)
         {
+            DatabaseConnectionString = databaseConnectionString;
             LexofficeKey = lexofficeKey;
             ClockodoMail = clockodoMail;
             ClockodoToken = clockodoToken;

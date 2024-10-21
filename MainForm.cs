@@ -1,38 +1,38 @@
 using System.Collections.Immutable;
-using coIT.Clockodo.QuickActions;
-using coIT.Lexoffice.GdiExport.Umsatzkontenprüfung;
 using coIT.Libraries.ConfigurationManager;
 using coIT.Libraries.ConfigurationManager.Cryptography;
 using coIT.Libraries.ConfigurationManager.Serialization;
 using coIT.Libraries.Gdi.Accounting;
 using coIT.Libraries.Gdi.Accounting.Contracts;
 using coIT.Libraries.LexOffice;
-using coIT.Libraries.Toolkit.Datengrundlagen.Konten;
+using coIT.Libraries.Toolkit.Datengrundlagen.KundenRelation;
 using coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter;
-using coIT.Toolkit.Lexoffice.GdiExport;
-using coIT.Toolkit.Lexoffice.GdiExport.Helpers;
+using coIT.Libraries.Toolkit.Datengrundlagen.Umsatzkonten;
+using coIT.Toolkit.Lexoffice.GdiExport.Einstellungen.ClockodoKonfiguration;
+using coIT.Toolkit.Lexoffice.GdiExport.Einstellungen.DatabaseKonfiguration;
+using coIT.Toolkit.Lexoffice.GdiExport.Einstellungen.LexofficeKonfiguration;
 using coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm;
+using coIT.Toolkit.Lexoffice.GdiExport.Umsatzkontenprüfung;
 using CSharpFunctionalExtensions;
 using GdiInvoice = coIT.Libraries.Gdi.Accounting.Contracts.Invoice;
-using KundenstammDaten = coIT.Libraries.Toolkit.Datengrundlagen.Kunden.Kundenstamm;
 using LexofficeInvoice = coIT.Libraries.LexOffice.DataContracts.Invoice.Invoice;
-using View = coIT.Lexoffice.GdiExport.Umsatzkonten.View;
+using View = coIT.Toolkit.Lexoffice.GdiExport.Umsatzkonten.View;
 
-namespace coIT.Lexoffice.GdiExport;
+namespace coIT.Toolkit.Lexoffice.GdiExport;
 
 public partial class MainForm : Form
 {
-    private Konfiguration _konfiguration;
-    private string _kundenstammListePfad;
-    private string _kontenListePfad;
-    private string _mitarbeiterListePfad;
+    private const string ConfigEnvironmentVariableName = "COIT_TOOLKIT_DATABASE_CONNECTIONSTRING";
+    private EnvironmentManager _environmentManager;
 
-    private JsonRepository<KontoDetails> _kontoRepository;
+    private Konfiguration _konfiguration;
+    private IKontoRepository _kontoRepository;
+    private IKundeRepository _kundenRepository;
+
     private Leistungsempfänger _leistungsempfänger;
     private LexofficeService _lexofficeService;
     private List<Mitarbeiter> _mitarbeiterListe;
-    private EnvironmentManager _environmentManager;
-    private FileSystemManager _filesystemManager;
+    private IMitarbeiterRepository _mitarbeiterRepository;
 
     public MainForm()
     {
@@ -73,6 +73,17 @@ public partial class MainForm : Form
         await KonfigurationLaden();
 
         _lexofficeService = new LexofficeService(_konfiguration.LexofficeKey);
+        _mitarbeiterRepository = new MitarbeiterDataTableRepository(
+            _konfiguration.DatabaseConnectionString
+        );
+
+        _kundenRepository = new KundenRelationDataTableRepository(
+            _konfiguration.DatabaseConnectionString
+        );
+
+        _kontoRepository = new UmsatzkontoDataTableRepository(
+            _konfiguration.DatabaseConnectionString
+        );
 
         await InitializeCustomerView();
         await BenutzeransichtInitialisieren();
@@ -88,91 +99,102 @@ public partial class MainForm : Form
     {
         var cryptoService = AesCryptographyService
             .FromKey(
-                "eyJJdGVtMSI6IkdNUmFNYkdmWkZSTDNsaGZYb1V3VHVCRlRvMm5LbDk5UXlnTHhWQzFXR0U9IiwiSXRlbTIiOiIwWWRlQXNXeW9GTXdBcFkydGI2Nk93PT0ifQ=="
+                "eyJJdGVtMSI6InlLdHdrUDJraEJRbTRTckpEaXFjQWpkM3pBc3NVdG8rSUNrTmFwYUgwbWs9IiwiSXRlbTIiOiJUblRxT1RUbXI3ajBCZlUwTEtnOS9BPT0ifQ=="
             )
             .Value;
         var serializationService = new NewtonsoftJsonSerializer();
         _environmentManager = new EnvironmentManager(cryptoService, serializationService);
-        _filesystemManager = new FileSystemManager();
 
-        var konfigurationKorrektGesetzt = await _environmentManager
-            .Get<Konfiguration>()
-            .BindZip(_ => _filesystemManager.GetPathFor<KundenstammDaten>())
-            .BindZip((_, _) => _filesystemManager.GetPathFor<UmsatzkontenListe>())
-            .BindZip((_, _, _) => _filesystemManager.GetPathFor<MitarbeiterListe>());
+        var databaseResult = await DatabaseEinstellungenLaden();
 
-        if (konfigurationKorrektGesetzt.IsSuccess)
+        if (databaseResult.IsFailure)
         {
-            var konfiguration = konfigurationKorrektGesetzt.Value;
-            KonfigurationFestlegen(
-                konfiguration.Item1,
-                konfiguration.Item2,
-                konfiguration.Item3,
-                konfiguration.Item4
-            );
-        }
-        else
-        {
-            await NeueKonfigurationDurchführen(_environmentManager, _filesystemManager);
-        }
-    }
-
-    private async Task NeueKonfigurationDurchführen(
-        EnvironmentManager environmentManager,
-        FileSystemManager fileSystemManager
-    )
-    {
-        this.Enabled = false;
-        var credentialsForm = new CreateCredentials();
-        credentialsForm.ShowDialog();
-
-        var konfigurationSpeichernErgebnis = await environmentManager
-            .Save(credentialsForm.Konfiguration)
-            .Bind(
-                () => fileSystemManager.SavePathFor<KundenstammDaten>(credentialsForm.Kundenstamm)
-            )
-            .Bind(
-                () => fileSystemManager.SavePathFor<UmsatzkontenListe>(credentialsForm.Umsatzkonten)
-            )
-            .Bind(
-                () => fileSystemManager.SavePathFor<MitarbeiterListe>(credentialsForm.Mitarbeiter)
-            );
-
-        if (konfigurationSpeichernErgebnis.IsFailure)
-        {
-            MessageBox.Show("Fehler beim Speichern der Zugangsdaten");
-            Application.Exit();
+            MessageBox.Show(
+                $@"Couldn't load database settings. Make sure you have set the environment variable {ConfigEnvironmentVariableName} and it contains the correct connectionstring for the table storage.");
+            return;
         }
 
-        KonfigurationFestlegen(
-            credentialsForm.Konfiguration,
-            credentialsForm.Kundenstamm,
-            credentialsForm.Umsatzkonten,
-            credentialsForm.Mitarbeiter
+        var connectionString = databaseResult.Value.ConnectionString;
+
+        var lexOfficeResult = await LexofficeEinstellungenLaden(connectionString, cryptoService);
+        var clockodoResult = await ClockodoEinstellungenLaden(connectionString, cryptoService);
+
+        var einstellungenLadenResult = Result.Combine(
+            clockodoResult,
+            databaseResult,
+            lexOfficeResult
         );
-        this.Enabled = true;
+
+        if (einstellungenLadenResult.IsFailure)
+        {
+            MessageBox.Show(
+                @"Couldn't load clockodo or lexoffice settings from table storage");
+            return;
+        }
+
+        _konfiguration = new Konfiguration(
+            connectionString,
+            lexOfficeResult.Value.LexofficeKey,
+            clockodoResult.Value.EmailAddress,
+            clockodoResult.Value.ApiToken
+        );
     }
 
-    private void KonfigurationFestlegen(
-        Konfiguration konfiguration,
-        string kundenstammPfad,
-        string umsatzkontenPfad,
-        string mitarbeiterPfad
+    private async Task<Result<DatabaseEinstellungen>> DatabaseEinstellungenLaden()
+    {
+        return await _environmentManager
+            .Get<DatabaseEinstellungen>(ConfigEnvironmentVariableName)
+            .TapError(fehler =>
+                MessageBox.Show(
+                    $"Datenbankzugang konnte nicht geladen werden: {fehler}",
+                    "Fehler",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                )
+            );
+    }
+
+    private async Task<Result<LexofficeEinstellungen>> LexofficeEinstellungenLaden(
+        string connectionString,
+        AesCryptographyService cryptoService
     )
     {
-        _konfiguration = konfiguration;
-        _kundenstammListePfad = kundenstammPfad;
-        _kontenListePfad = umsatzkontenPfad;
-        _mitarbeiterListePfad = mitarbeiterPfad;
+        return await Result
+            .Success(new LexofficeKonfigurationDataTableRepository(connectionString, cryptoService))
+            .Bind(lexofficeRepository => lexofficeRepository.Get())
+            .TapError(fehler =>
+                MessageBox.Show(
+                    $"Lexoffice Konfiguration konnte nicht geladen werden: {fehler}",
+                    "Fehler",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                )
+            );
+    }
+
+    private async Task<Result<ClockodoEinstellungen>> ClockodoEinstellungenLaden(
+        string connectionString,
+        AesCryptographyService cryptoService
+    )
+    {
+        return await Result
+            .Success(new ClockodoKonfigurationDataTableRepository(connectionString, cryptoService))
+            .Bind(clockodoRepository => clockodoRepository.Get())
+            .TapError(fehler =>
+                MessageBox.Show(
+                    $"Clockodo Konfiguration konnte nicht geladen werden: {fehler}",
+                    "Fehler",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                )
+            );
     }
 
     private async Task BenutzeransichtInitialisieren()
     {
-        _kontoRepository = new JsonRepository<KontoDetails>(_kontenListePfad);
-        var lokaleMitarbeiterRepository = new JsonRepository<Mitarbeiter>(_mitarbeiterListePfad);
         var benutzerAnsicht = await Mitarbeiterliste.View.Erstellen(
             _kontoRepository,
-            lokaleMitarbeiterRepository,
+            _mitarbeiterRepository,
             _konfiguration
         );
         tbpMiterabeiterliste.Controls.Add(benutzerAnsicht);
@@ -185,7 +207,7 @@ public partial class MainForm : Form
         var countries = await _lexofficeService.GetAllCountries();
         _leistungsempfänger = await Leistungsempfänger.VonDateiUndLexoffice(
             _lexofficeService,
-            _kundenstammListePfad
+            _kundenRepository
         );
         var customerView = new Kundenstamm.View(_leistungsempfänger, countries);
         tbpDebitorNumber.Controls.Add(customerView);
@@ -194,14 +216,13 @@ public partial class MainForm : Form
 
     private async Task InitializeAccountView()
     {
-        _kontoRepository = new JsonRepository<KontoDetails>(_kontenListePfad);
         var accountControl = new View(_kontoRepository);
         spcUmsatzkontenSplit.Panel1.Controls.Add(accountControl);
         accountControl.Dock = DockStyle.Fill;
 
         var umsatzkontenControl = new UmsatzkontenprüfungControl(
-            _environmentManager,
-            _filesystemManager
+            _mitarbeiterRepository,
+            _konfiguration
         );
         spcUmsatzkontenSplit.Panel2.Controls.Add(umsatzkontenControl);
         umsatzkontenControl.Dock = DockStyle.Fill;
@@ -211,7 +232,7 @@ public partial class MainForm : Form
     {
         var empfängerMitLeererNummer = _leistungsempfänger
             .HoleKundenListe()
-            .Where(kunde => kunde.Debitorennummer == 0);
+            .Where(kunde => kunde.DebitorenNummer == 0);
 
         foreach (var empfänger in empfängerMitLeererNummer)
             lview_ErkannteFehler.Items.Add(
@@ -235,7 +256,7 @@ public partial class MainForm : Form
 
         duplikate = _leistungsempfänger
             .HoleKundenListe()
-            .GroupBy(kunde => kunde.Debitorennummer)
+            .GroupBy(kunde => kunde.DebitorenNummer)
             .Where(g => g.Count() > 1)
             .Select(y => y.Key)
             .Where(number => number is not 53029 and not 0)
@@ -249,7 +270,7 @@ public partial class MainForm : Form
 
     private async Task KontenAufDuplikatePrüfen()
     {
-        var kontenListe = await _kontoRepository.List();
+        var kontenListe = (await _kontoRepository.GetAll()).Value;
         var duplikate = kontenListe
             .ToList()
             .GroupBy(konto => konto.KontoNummer)
@@ -368,6 +389,7 @@ public partial class MainForm : Form
 
         var ergebnis = await getInvoicesTask;
         Enabled = true;
+        ladeForm.Close();
 
         return ergebnis;
     }
@@ -383,7 +405,7 @@ public partial class MainForm : Form
         var kontenNetto = new Dictionary<int, decimal>();
 
         var kunden = _leistungsempfänger.HoleKundenListe();
-        var konten = await _kontoRepository.List();
+        var konten = (await _kontoRepository.GetAll()).Value;
         var invoiceMapper = new InvoiceMapper(kunden, konten, _mitarbeiterListe);
 
         foreach (var invoice in lexOfficeInvoices)

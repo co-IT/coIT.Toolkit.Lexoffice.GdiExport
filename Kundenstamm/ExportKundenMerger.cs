@@ -1,71 +1,72 @@
-using coIT.Libraries.Toolkit.Datengrundlagen.Kunden;
+using Azure;
+using coIT.Libraries.Toolkit.Datengrundlagen.KundenRelation;
 
 namespace coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm;
 
 internal class ExportKundenMerger
 {
-    private readonly IList<Kunde> _lokalGespeicherteKunden;
-    private readonly IList<Kunde> _externGespeicherteKunden;
+    private readonly IReadOnlyList<KundeRelation> _lokalGespeicherteKunden;
+    private readonly IList<KundeRelation> _externGespeicherteKunden;
 
     public ExportKundenMerger(
-        IList<Kunde> externGespeicherteKunden,
-        IList<Kunde> lokalGespeicherteKunden
+        IList<KundeRelation> externGespeicherteKunden,
+        IReadOnlyList<KundeRelation> lokalGespeicherteKunden
     )
     {
         _externGespeicherteKunden = externGespeicherteKunden;
         _lokalGespeicherteKunden = lokalGespeicherteKunden;
     }
 
-    public static List<Kunde> MergenUndAnreichern(
-        IList<Kunde> externGespeicherteKunden,
-        IList<Kunde> lokalGespeicherteKunden
+    public static List<KundeRelation> MergenUndAnreichern(
+        IList<KundeRelation> externGespeicherteKunden,
+        IReadOnlyList<KundeRelation> lokalGespeicherteKunden
     )
     {
         var merges = new ExportKundenMerger(externGespeicherteKunden, lokalGespeicherteKunden);
         return merges.HoleMergedUndAngereicherteList();
     }
 
-    private List<Kunde> HoleMergedUndAngereicherteList()
+    private List<KundeRelation> HoleMergedUndAngereicherteList()
     {
-        var kundenListe = new List<Kunde>();
+        var kundenListe = new List<KundeRelation>();
         kundenListe.AddRange(HoleExterneGespeicherteKundenMitLokalenDaten());
         kundenListe.AddRange(AuflistungNurLokaleKunden());
         return kundenListe;
     }
 
-    private List<Kunde> HoleExterneGespeicherteKundenMitLokalenDaten()
+    private List<KundeRelation> HoleExterneGespeicherteKundenMitLokalenDaten()
     {
         return _externGespeicherteKunden
             .Select(externeGespeicherteKunden =>
-                externeGespeicherteKunden.MitDebitorennummer(
-                    VersucheDebitorennummerZuHolen(externeGespeicherteKunden)
-                )
-            )
+            {
+                var lokalerKunde = _lokalGespeicherteKunden
+                    .FirstOrDefault(lokaleKunden =>
+                        lokaleKunden.Kundennummer == externeGespeicherteKunden.Kundennummer
+                    );
+
+                return externeGespeicherteKunden with
+                {
+                    DebitorenNummer = lokalerKunde?.DebitorenNummer ?? 0,
+                    ETag = lokalerKunde?.ETag ?? ETag.All,
+                    Timestamp = lokalerKunde?.Timestamp
+                };
+            })
             .ToList();
     }
 
-    private List<Kunde> AuflistungNurLokaleKunden()
+    private List<KundeRelation> AuflistungNurLokaleKunden()
     {
-        return _lokalGespeicherteKunden
+        return  _lokalGespeicherteKunden
             .Where(lokalGespeicherteKunden =>
                 KundeIstExternGespeichert(lokalGespeicherteKunden) is false
             )
             .ToList();
     }
 
-    private bool KundeIstExternGespeichert(Kunde lokaleKunden)
+    private bool KundeIstExternGespeichert(KundeRelation lokaleKunden)
     {
         return _externGespeicherteKunden.Any(lexofficeCustomer =>
             lexofficeCustomer.Kundennummer == lokaleKunden.Kundennummer
         );
-    }
-
-    private int VersucheDebitorennummerZuHolen(Kunde externGespeicherteKunden)
-    {
-        return _lokalGespeicherteKunden
-                .FirstOrDefault(lokaleKunden =>
-                    lokaleKunden.Kundennummer == externGespeicherteKunden.Kundennummer
-                )
-                ?.Debitorennummer ?? 0;
     }
 }

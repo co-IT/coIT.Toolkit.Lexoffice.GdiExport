@@ -1,11 +1,11 @@
 using System.ComponentModel;
+using Azure;
 using coIT.Libraries.LexOffice.DataContracts.Country;
-using coIT.Libraries.Toolkit.Datengrundlagen.Kunden;
+using coIT.Libraries.Toolkit.Datengrundlagen.KundenRelation;
 using coIT.Libraries.WinForms;
-using coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm;
 using coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm.Filter;
 
-namespace coIT.Lexoffice.GdiExport.Kundenstamm;
+namespace coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm;
 
 public partial class View : UserControl
 {
@@ -13,6 +13,7 @@ public partial class View : UserControl
     private readonly Leistungsempfänger _leistungsempfänger;
 
     private readonly KundenFilter _kundenFilter = new();
+    private SortableBindingList<KundeRelation> _kundenList;
 
     public View(Leistungsempfänger leistungsempfänger, List<CountryInformation> countryList)
     {
@@ -26,24 +27,29 @@ public partial class View : UserControl
     private void DebitorennummerKontrolle_Load(object sender, EventArgs e)
     {
         ListeAktualisieren();
+        ÄndereDataGridÜberschriftenNamen();
     }
 
     private void ListeAktualisieren()
     {
         var liste = _leistungsempfänger.HoleKundenListe();
         var relevanteKunden = _kundenFilter.Anwenden(liste);
+        _kundenList = new SortableBindingList<KundeRelation>(relevanteKunden.ToList());
+        dgvCustomers.DataSource = _kundenList;
 
-        dgvCustomers.DataSource = new SortableBindingList<Kunde>(relevanteKunden.ToList());
+        dgvCustomers.AutoGenerateColumns = false;
         dgvCustomers.Sort(dgvCustomers.Columns[2], ListSortDirection.Ascending);
-        ÄndereDataGridÜberschriftenNamen();
     }
 
     private void ÄndereDataGridÜberschriftenNamen()
     {
+        dgvCustomers.Columns.Remove("Id");
+        dgvCustomers.Columns.Remove("ETag");
+        dgvCustomers.Columns.Remove("Timestamp");
+
         var viewHeaders = new List<string>
         {
-            "Leistungsempfänger Nr.",
-            "Leistungsempfänger Art",
+            "Kundennr.",
             "Debitor Nr.",
             "Debitor Name",
             "Straße",
@@ -51,8 +57,8 @@ public partial class View : UserControl
             "Stadt",
             "Land",
             "Länderkürzel",
-            "asdf",
-            "status",
+            "Typ",
+            "Steuerklassifizierung",
         };
 
         dgvCustomers.SetHeadersTo(viewHeaders);
@@ -60,10 +66,13 @@ public partial class View : UserControl
 
     private void dgvCustomers_DoubleClick(object sender, EventArgs e)
     {
-        DataGridViewModelBinder.ExecuteWithSelectedItem<Kunde>(dgvCustomers, Bearbeiten);
+        DataGridViewModelBinder.ExecuteWithSelectedItem<KundeRelation>(
+            dgvCustomers,
+            kunde => Bearbeiten(kunde)
+        );
     }
 
-    private void Bearbeiten(Kunde account)
+    private async Task Bearbeiten(KundeRelation account)
     {
         var editForm = new Edit(account, _countryList);
         var editResult = editForm.ShowDialog();
@@ -71,13 +80,24 @@ public partial class View : UserControl
         if (editResult != DialogResult.OK)
             return;
 
-        SpeichereÄnderungen();
-        dgvCustomers.Invalidate();
-    }
+        var updatedCustomer = editForm.Customer with
+        {
+            ETag = ETag.All,
+            Timestamp = DateTimeOffset.Now
+        };
 
-    private void SpeichereÄnderungen()
-    {
-        _leistungsempfänger.SpeichereÄnderungen();
+        var updateResult = await _leistungsempfänger.UpdateKunde(updatedCustomer);
+
+        if (updateResult.IsFailure)
+        {
+            MessageBox.Show(updateResult.Error);
+            return;
+        }
+
+        var index = _kundenList.IndexOf(account);
+        _kundenList[index] = updatedCustomer;
+
+        dgvCustomers.Invalidate();
     }
 
     private void tbxLeistungsempfaengerFilter_TextChanged(object sender, EventArgs e)

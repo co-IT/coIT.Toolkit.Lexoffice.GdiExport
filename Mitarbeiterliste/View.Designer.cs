@@ -1,4 +1,4 @@
-﻿namespace coIT.Lexoffice.GdiExport.Mitarbeiterliste
+﻿namespace coIT.Toolkit.Lexoffice.GdiExport.Mitarbeiterliste
 {
     partial class View
     {

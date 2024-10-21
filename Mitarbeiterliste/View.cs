@@ -1,21 +1,18 @@
-using System.Collections.Immutable;
 using coIT.Libraries.Clockodo.TimeEntries;
 using coIT.Libraries.Clockodo.TimeEntries.Contracts;
 using coIT.Libraries.LexOffice;
 using coIT.Libraries.LexOffice.DataContracts.Invoice;
-using coIT.Libraries.Toolkit.Datengrundlagen.Konten;
 using coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter;
+using coIT.Libraries.Toolkit.Datengrundlagen.Umsatzkonten;
 using coIT.Libraries.WinForms;
-using coIT.Toolkit.Lexoffice.GdiExport;
-using coIT.Toolkit.Lexoffice.GdiExport.Helpers;
-using coIT.Toolkit.Lexoffice.GdiExport.Mitarbeiterliste;
+using Team = coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter.Team;
 
-namespace coIT.Lexoffice.GdiExport.Mitarbeiterliste
+namespace coIT.Toolkit.Lexoffice.GdiExport.Mitarbeiterliste
 {
     internal partial class View : UserControl
     {
-        private readonly JsonRepository<KontoDetails> _kontorepository;
-        private readonly JsonRepository<Mitarbeiter> _lokaleMitarbeiterRepository;
+        private readonly IKontoRepository _kontorepository;
+        private readonly IMitarbeiterRepository _lokaleMitarbeiterRepository;
 
         private TimeEntriesService _clockodoservice;
         private List<Mitarbeiter> _mitarbeiter;
@@ -24,19 +21,19 @@ namespace coIT.Lexoffice.GdiExport.Mitarbeiterliste
         public List<Mitarbeiter> MitarbeiterListe => _mitarbeiter;
 
         public static async Task<View> Erstellen(
-            JsonRepository<KontoDetails> kontorepository,
-            JsonRepository<Mitarbeiter> lokaleMitarbeiterRepository,
+            IKontoRepository kontoRepository,
+            IMitarbeiterRepository mitarbeiterRepository,
             Konfiguration konfiguration
         )
         {
-            var view = new View(kontorepository, lokaleMitarbeiterRepository, konfiguration);
+            var view = new View(kontoRepository, mitarbeiterRepository, konfiguration);
             view._mitarbeiter = await view.MitarbeiterListeAbfragen();
             return view;
         }
 
         private View(
-            JsonRepository<KontoDetails> kontorepository,
-            JsonRepository<Mitarbeiter> lokaleMitarbeiterRepository,
+            IKontoRepository kontorepository,
+            IMitarbeiterRepository lokaleMitarbeiterRepository,
             Konfiguration konfiguration
         )
         {
@@ -62,6 +59,10 @@ namespace coIT.Lexoffice.GdiExport.Mitarbeiterliste
         {
             dgvMitarbeiter.ConfigureWithDefaultBehaviour();
             dgvMitarbeiter.DataSource = new SortableBindingList<Mitarbeiter>(_mitarbeiter);
+            dgvMitarbeiter.AutoGenerateColumns = false;
+            dgvMitarbeiter.Columns.Remove("Timestamp");
+            dgvMitarbeiter.Columns.Remove("ETag");
+            dgvMitarbeiter.Refresh();
         }
 
         public async Task<List<Mitarbeiter>> MitarbeiterListeAbfragen()
@@ -69,7 +70,7 @@ namespace coIT.Lexoffice.GdiExport.Mitarbeiterliste
             var clockodoMitarbeiter = (await _clockodoservice.GetAllUsers())
                 .ToList()
                 .ZuMitarbeitern();
-            var lokaleMitarbeiter = await _lokaleMitarbeiterRepository.List();
+            var lokaleMitarbeiter = (await _lokaleMitarbeiterRepository.GetAll()).Value;
 
             clockodoMitarbeiter.AddRange(lokaleMitarbeiter);
 
@@ -78,7 +79,11 @@ namespace coIT.Lexoffice.GdiExport.Mitarbeiterliste
 
         private void TeamListeInitialisieren()
         {
-            var teams = _mitarbeiter.Select(mitarbeiter => mitarbeiter.Team).Distinct().ToList();
+            var teams = _mitarbeiter
+                .Select(mitarbeiter => mitarbeiter.Team)
+                .Distinct()
+                .Where(x => x is not null)
+                .ToList();
 
             foreach (var team in teams)
                 cbxTeam.Items.Add(team);
@@ -88,7 +93,7 @@ namespace coIT.Lexoffice.GdiExport.Mitarbeiterliste
 
         private async Task KontoListeInitialisieren()
         {
-            var kontoDetails = await _kontorepository.List();
+            var kontoDetails = (await _kontorepository.GetAll()).Value;
             var kontoDetailsSortiert = kontoDetails.OrderBy(konto => konto.KontoNummer);
 
             foreach (var konto in kontoDetailsSortiert)
@@ -103,7 +108,7 @@ namespace coIT.Lexoffice.GdiExport.Mitarbeiterliste
 
             var start = DateOnly.FromDateTime(dtpStart.Value);
             var ende = DateOnly.FromDateTime(dtpEnde.Value);
-            var ausgewähltesKonto = (KontoDetails)cbxKonto.SelectedItem;
+            var ausgewähltesKonto = (Umsatzkonto)cbxKonto.SelectedItem;
 
             var team = (Team)cbxTeam.SelectedItem;
             var mitarbeiterNummernInAusgewähltenTeam = NummernAusgewählterMitarbeiterErhalten(team);
@@ -138,7 +143,7 @@ namespace coIT.Lexoffice.GdiExport.Mitarbeiterliste
         private async Task<decimal> AufgewendeteStundenFürTeamUndZeitraumBerechnen(
             DateOnly start,
             DateOnly ende,
-            KontoDetails ausgewähltesKonto,
+            Umsatzkonto ausgewähltesKonto,
             List<int> mitarbeiterNummernInAusgewähltenTeam
         )
         {
@@ -170,7 +175,7 @@ namespace coIT.Lexoffice.GdiExport.Mitarbeiterliste
         private static async Task<decimal> NettoErlösFürTeamUndZeitraumBerechnen(
             DateOnly start,
             DateOnly ende,
-            KontoDetails ausgewähltesKonto,
+            Umsatzkonto ausgewähltesKonto,
             List<int> mitarbeiterNummernInAusgewähltenTeam,
             string key
         )
@@ -223,6 +228,7 @@ namespace coIT.Lexoffice.GdiExport.Mitarbeiterliste
         private List<int> NummernAusgewählterMitarbeiterErhalten(Team team)
         {
             var mitarbeiterNummernInAusgewähltenTeam = _mitarbeiter
+                .Where(mitarbeiter => mitarbeiter.Team is not null)
                 .Where(mitarbeiter => mitarbeiter.Team.Id == team.Id)
                 .Select(mitarbeiter => mitarbeiter.Nummer)
                 .ToList();
@@ -231,7 +237,7 @@ namespace coIT.Lexoffice.GdiExport.Mitarbeiterliste
 
         private static List<InvoiceLineItem> RechnungsZeilenNachKontoFiltern(
             List<InvoiceLineItem> rechnungsZeilen,
-            KontoDetails ausgewähltesKonto
+            Umsatzkonto ausgewähltesKonto
         )
         {
             var rechnungsZeilenAufAusgewähltemKonto = rechnungsZeilen
