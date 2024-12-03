@@ -1,20 +1,18 @@
-
 using coIT.Libraries.Toolkit.Datengrundlagen.KundenRelation;
 
-namespace coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm.Filter
+namespace coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm.Filter;
+
+internal class DebitorNummerFilter : IFilterKunde
 {
-    internal class DebitorNummerFilter : IFilterKunde
-    {
-        public string Keyword { get; set; }
+  public DebitorNummerFilter(string keyword)
+  {
+    Keyword = keyword;
+  }
 
-        public DebitorNummerFilter(string keyword)
-        {
-            Keyword = keyword;
-        }
+  public string Keyword { get; set; }
 
-        public IEnumerable<KundeRelation> KriteriumTrifftZu(IEnumerable<KundeRelation> kunden)
-        {
-            return kunden.Where(kunde => kunde.DebitorenNummer.ToString().Contains(Keyword));
-        }
-    }
+  public IEnumerable<KundeRelation> KriteriumTrifftZu(IEnumerable<KundeRelation> kunden)
+  {
+    return kunden.Where(kunde => kunde.DebitorenNummer.ToString().Contains(Keyword));
+  }
 }

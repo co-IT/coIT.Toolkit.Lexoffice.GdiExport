@@ -16,6 +16,11 @@ internal class ClockodoKonfigurationMapper
   {
     return _cryptographyService
       .Decrypt(entity.ApiToken)
-      .Map(apiToken => new ClockodoEinstellungen { ApiToken = apiToken, EmailAddress = entity.EmailAddress, BaseAddress = entity.BaseAddress });
+      .Map(apiToken => new ClockodoEinstellungen
+      {
+        ApiToken = apiToken,
+        EmailAddress = entity.EmailAddress,
+        BaseAddress = entity.BaseAddress,
+      });
   }
 }

@@ -1,33 +1,32 @@
-namespace coIT.Toolkit.Lexoffice.GdiExport
+namespace coIT.Toolkit.Lexoffice.GdiExport;
+
+public partial class LadeForm : Form
 {
-    public partial class LadeForm : Form
-    {
-        private readonly string _text;
+  private readonly string _text;
 
-        public LadeForm(Progress<float> progress, string label)
-        {
-            InitializeComponent();
+  public LadeForm(Progress<float> progress, string label)
+  {
+    InitializeComponent();
 
-            SetLabelText(0);
+    SetLabelText(0);
 
-            progress.ProgressChanged += SetProgressBar;
-            _text = label;
-        }
+    progress.ProgressChanged += SetProgressBar;
+    _text = label;
+  }
 
-        private void SetProgressBar(object? sender, float e)
-        {
-            var prozent = Math.Round(e, 4);
-            SetLabelText(prozent);
+  private void SetProgressBar(object? sender, float e)
+  {
+    var prozent = Math.Round(e, 4);
+    SetLabelText(prozent);
 
-            progressBar1.Value = (int)Math.Floor(prozent * 100);
+    progressBar1.Value = (int)Math.Floor(prozent * 100);
 
-            if (e >= 1)
-                Close();
-        }
+    if (e >= 1)
+      Close();
+  }
 
-        private void SetLabelText(double prozent)
-        {
-            lblStatus.Text = $"{_text} - {prozent:p}";
-        }
-    }
+  private void SetLabelText(double prozent)
+  {
+    lblStatus.Text = $"{_text} - {prozent:p}";
+  }
 }

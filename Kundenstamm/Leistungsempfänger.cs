@@ -3,58 +3,56 @@ using coIT.Libraries.LexOffice;
 using coIT.Libraries.Toolkit.Datengrundlagen.KundenRelation;
 using CSharpFunctionalExtensions;
 
-namespace coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm
+namespace coIT.Toolkit.Lexoffice.GdiExport.Kundenstamm;
+
+public class Leistungsempfänger
 {
-    public class Leistungsempfänger
-    {
-        private readonly List<KundeRelation> _kundenListe;
-        private readonly IKundeRepository _kundenRepository;
+  private readonly List<KundeRelation> _kundenListe;
+  private readonly IKundeRepository _kundenRepository;
 
-        public static async Task<Leistungsempfänger> VonDateiUndLexoffice(
-            LexofficeService lexOfficeService,
-            IKundeRepository kundenRepository
-        )
-        {
-            var lokalGespeicherteKunden = (await kundenRepository.GetAll()).Value;
+  private Leistungsempfänger(
+    IReadOnlyList<KundeRelation> lokalGespeicherteKunden,
+    IKundeRepository kundenRepository,
+    IList<KundeRelation> externGespeicherteLeistungsempfänger
+  )
+  {
+    _kundenListe = ExportKundenMerger.MergenUndAnreichern(
+      externGespeicherteLeistungsempfänger,
+      lokalGespeicherteKunden
+    );
+    _kundenRepository = kundenRepository;
+  }
 
-            var lexOfficeKontakte = await lexOfficeService.GetContactsAsync();
+  public static async Task<Leistungsempfänger> VonDateiUndLexoffice(
+    LexofficeService lexOfficeService,
+    IKundeRepository kundenRepository
+  )
+  {
+    var lokalGespeicherteKunden = (await kundenRepository.GetAll()).Value;
 
-            var externGespeicherteLeistungsempfänger = lexOfficeKontakte
-                .Where(t => t.Role.Number is not null)
-                .Where(c => c.Company is not null)
-                .Select(lexOfficeContact => lexOfficeContact.ZuExportKunden())
-                .ToList();
+    var lexOfficeKontakte = await lexOfficeService.GetContactsAsync();
 
-            return new Leistungsempfänger(
-                lokalGespeicherteKunden,
-                kundenRepository,
-                externGespeicherteLeistungsempfänger
-            );
-        }
+    var externGespeicherteLeistungsempfänger = lexOfficeKontakte
+      .Where(t => t.Role.Number is not null)
+      .Where(c => c.Company is not null)
+      .Select(lexOfficeContact => lexOfficeContact.ZuExportKunden())
+      .ToList();
 
-        private Leistungsempfänger(
-            IReadOnlyList<KundeRelation> lokalGespeicherteKunden,
-            IKundeRepository kundenRepository,
-            IList<KundeRelation> externGespeicherteLeistungsempfänger
-        )
-        {
-            _kundenListe = ExportKundenMerger.MergenUndAnreichern(
-                externGespeicherteLeistungsempfänger,
-                lokalGespeicherteKunden
-            );
-            _kundenRepository = kundenRepository;
-        }
+    return new Leistungsempfänger(lokalGespeicherteKunden, kundenRepository, externGespeicherteLeistungsempfänger);
+  }
 
-        public List<KundeRelation> HoleKundenListe() => _kundenListe;
+  public List<KundeRelation> HoleKundenListe()
+  {
+    return _kundenListe;
+  }
 
-        public List<Customer> HoleGdiKundenListe()
-        {
-            return HoleKundenListe().ZuGdiKunden();
-        }
+  public List<Customer> HoleGdiKundenListe()
+  {
+    return HoleKundenListe().ZuGdiKunden();
+  }
 
-        public async Task<Result> UpdateKunde(KundeRelation kunde)
-        {
-            return await _kundenRepository.UpsertAsync(kunde);
-        }
-    }
+  public async Task<Result> UpdateKunde(KundeRelation kunde)
+  {
+    return await _kundenRepository.UpsertAsync(kunde);
+  }
 }
