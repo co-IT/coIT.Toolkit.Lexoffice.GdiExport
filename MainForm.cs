@@ -327,8 +327,11 @@ public partial class MainForm : Form
             gdiInvoiceCreationResults.Invoices.Count
         );
 
+        var kundenMitRechnung = _leistungsempfänger.HoleGdiKundenListe()
+            .Where(kunde => gdiInvoiceCreationResults.Invoices.Any(invoice => invoice.DebitorNumber == kunde.Number));
+
         var kundenListe = cbxIncludeCustomers.Checked
-            ? _leistungsempfänger.HoleGdiKundenListe()
+            ? kundenMitRechnung
             : new List<Customer>();
 
         return GdiExporter.CreateExport(gdiInvoiceCreationResults.Invoices, kundenListe);

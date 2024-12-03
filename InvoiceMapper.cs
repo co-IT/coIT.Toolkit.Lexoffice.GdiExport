@@ -15,7 +15,7 @@ internal class InvoiceMapper
 {
     private readonly IEnumerable<KundeRelation> _customers;
     private readonly IEnumerable<Umsatzkonto> _accounts;
-    private readonly AlleRechnungsregeln _rechnungsRegelen;
+    private readonly AlleRechnungsregeln _rechnungsRegeln;
 
     internal InvoiceMapper(
         IEnumerable<KundeRelation> customers,
@@ -26,7 +26,7 @@ internal class InvoiceMapper
         _customers = customers;
         _accounts = accounts;
 
-        _rechnungsRegelen = new AlleRechnungsregeln(
+        _rechnungsRegeln = new AlleRechnungsregeln(
             customers.ToImmutableList(),
             accounts.ToImmutableList(),
             mitarbeiter.ToImmutableList()
@@ -35,7 +35,7 @@ internal class InvoiceMapper
 
     internal Result<GdiInvoice> ToGdiInvoice(LexofficeInvoice lexOfficeInvoice)
     {
-        var ergebnis = _rechnungsRegelen.Prüfen(lexOfficeInvoice);
+        var ergebnis = _rechnungsRegeln.Prüfen(lexOfficeInvoice);
 
         if (ergebnis.IsFailure)
             return ergebnis.ConvertFailure<GdiInvoice>();
