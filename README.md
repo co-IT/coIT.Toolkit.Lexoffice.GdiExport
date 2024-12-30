@@ -1,4 +1,30 @@
-# Einrichtung
+# coIT.Toolkit.Lexoffice.GdiExport
+
+Programm um Rechnungen aus Lexoffice für den GDI Import vorzubereiten. Enthält zusätzlich Funktionalitäten zum Abgleichen von Konten und Prüfen von Rechnungen
+
+## Anleitung
+
+### Ersteinrichtung
+
+`.msi`-Datei von [GitHub Releases](https://github.com/co-IT/coIT.Toolkit.Lexoffice.GdiExport/releases) herunterladen und installieren
+
+Wichtig: Es muss der verschlüsselte Datenbank ConnectionString als Benutzer-Umgebungsvariable `COIT_TOOLKIT_DATABASE_CONNECTIONSTRING` zur Verfügung stehen.
+
+### Updates
+
+Beim Programmstart wird in den GitHub Releases automatisch nach Updates gesucht und diese installiert.
+
+## Development
+
+### Deployment
+
+Wenn eine neue Version released werden soll, muss nur ein neuer GitHub Release mit einem Tag im Format `x.x.x` erstellt werden.
+
+Das Deployment startet daraufhin in einer GitHub Action durch den gepushten Tag automatisch.
+
+Die .NET Version für den `Publish` workflow wird in der `global.json` festgelegt und muss in der Zukunft eventuell angepasst werden.
+
+### nuget-Packages
 
 Um die notwendigen Packages aus dem privaten Package-Manager der co-IT aus GitHub zu laden, wird eine eigene `nuget.config` benötigt.
 
