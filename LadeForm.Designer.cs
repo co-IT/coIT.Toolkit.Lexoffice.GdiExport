@@ -28,43 +28,44 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
         /// </summary>
         private void InitializeComponent()
         {
-            progressBar1 = new ProgressBar();
-            lblStatus = new Label();
-            SuspendLayout();
-            // 
-            // progressBar1
-            // 
-            progressBar1.Location = new Point(12, 65);
-            progressBar1.Name = "progressBar1";
-            progressBar1.Size = new Size(218, 23);
-            progressBar1.TabIndex = 0;
-            // 
-            // lblStatus
-            // 
-            lblStatus.Location = new Point(12, 9);
-            lblStatus.Name = "lblStatus";
-            lblStatus.Size = new Size(224, 39);
-            lblStatus.TabIndex = 1;
-            lblStatus.Text = "label1";
-            lblStatus.TextAlign = ContentAlignment.BottomCenter;
-            // 
-            // LadeForm
-            // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            BackColor = SystemColors.ControlDark;
-            ClientSize = new Size(247, 103);
-            Controls.Add(lblStatus);
-            Controls.Add(progressBar1);
-            FormBorderStyle = FormBorderStyle.None;
-            MaximizeBox = false;
-            MinimizeBox = false;
-            Name = "LadeForm";
-            ShowInTaskbar = false;
-            StartPosition = FormStartPosition.CenterScreen;
-            Text = "Bitte warten";
-            TopMost = true;
-            ResumeLayout(false);
+          System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LadeForm));
+          progressBar1 = new System.Windows.Forms.ProgressBar();
+          lblStatus = new System.Windows.Forms.Label();
+          SuspendLayout();
+          // 
+          // progressBar1
+          // 
+          progressBar1.Location = new System.Drawing.Point(12, 65);
+          progressBar1.Name = "progressBar1";
+          progressBar1.Size = new System.Drawing.Size(218, 23);
+          progressBar1.TabIndex = 0;
+          // 
+          // lblStatus
+          // 
+          lblStatus.Location = new System.Drawing.Point(12, 9);
+          lblStatus.Name = "lblStatus";
+          lblStatus.Size = new System.Drawing.Size(224, 39);
+          lblStatus.TabIndex = 1;
+          lblStatus.Text = "label1";
+          lblStatus.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+          // 
+          // LadeForm
+          // 
+          AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+          AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+          BackColor = System.Drawing.SystemColors.ControlDark;
+          ClientSize = new System.Drawing.Size(247, 103);
+          Controls.Add(lblStatus);
+          Controls.Add(progressBar1);
+          FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+          Icon = ((System.Drawing.Icon)resources.GetObject("$this.Icon"));
+          MaximizeBox = false;
+          MinimizeBox = false;
+          ShowInTaskbar = false;
+          StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+          Text = "Bitte warten";
+          TopMost = true;
+          ResumeLayout(false);
         }
 
         #endregion
