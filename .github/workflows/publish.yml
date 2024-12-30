@@ -1,4 +1,4 @@
-name: Clockodo Quickactions bauen und Installer sowie Update erstellen
+name: Publish
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - '*.*.*'
 
 jobs:
-  clockodo-quickactions-installer-erstellen:
+  publish:
     runs-on: windows-latest
     name: ClockodoQuickActions Installer Bauen
     permissions:
