@@ -14,6 +14,10 @@ Wichtig: Es muss der verschlüsselte Datenbank ConnectionString als Benutzer-Umg
 
 Beim Programmstart wird in den GitHub Releases automatisch nach Updates gesucht und diese installiert.
 
+### Screenshots
+
+![LexofficeGdiExportScreenshot](assets/images/LexofficeToGDI.PNG)
+
 ## Development
 
 ### Deployment
