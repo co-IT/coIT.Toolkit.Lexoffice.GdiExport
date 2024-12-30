@@ -1,17 +1,15 @@
-name: Publish
+name: PR
 
 on:
-  push:
-    tags:
-      - '*.*.*'
+  pull_request:
+  workflow_dispatch:
 
 jobs:
-  publish:
+  pr:
     runs-on: windows-latest
     permissions:
-      packages: write
-      contents: write
-
+      packages: read
+      contents: read
     steps:
       - name: Repository laden
         uses: actions/checkout@v4
@@ -42,22 +40,14 @@ jobs:
           advinst-enable-automation: 'true'
           aip-path: ${{ github.workspace }}\coIT.Toolkit.Lexoffice.GdiExport.Installer.aip
           aip-build-name: DefaultBuild
-          aip-package-name: coIT.Toolkit.Lexoffice.GdiExport.Installer-${{github.ref_name}}.msi
-          aip-output-dir:  ${{ github.workspace }}\setup
+          aip-package-name: coIT.Toolkit.Lexoffice.GdiExport.Installer-0.0.0.msi
+          aip-output-dir: ${{ github.workspace }}\setup
           aip-commands: |
-            SetVersion ${{github.ref_name}}
-
-      - name: Installer zu release hinzufügen
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ github.workspace }}\setup\coIT.Toolkit.Lexoffice.GdiExport.Installer-${{github.ref_name}}.msi
-          tag: ${{ github.ref }}
-          overwrite: true
+            SetVersion 0.0.0
 
       - name: Update json erstellen
         env:
-          VERSION: ${{ github.ref_name }}
+          VERSION: 0.0.0
         run: |
           # JSON String erstellen
           $jsonString = '{"RegistryKey":"HKUD\\Software\\\\co-IT.eu GmbH\\Lexoffice Gdi Export\\Version", "Version":"' + $env:VERSION + '"}'
@@ -68,11 +58,3 @@ jobs:
           # Dbug Ausgabe
           Write-Output (Resolve-Path advinst_update.json)
           Get-Content advinst_update.json
-
-      - name: Update json zu Release hinzufügen
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ github.workspace }}\advinst_update.json
-          tag: ${{ github.ref }}
-          overwrite: true
