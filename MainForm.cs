@@ -346,19 +346,22 @@ public partial class MainForm : Form
 
   private async Task<IImmutableList<LexofficeInvoice>> LoadInvoicesInPeriod(DateOnly start, DateOnly end)
   {
-    var vouchersInPeriod = await _lexofficeService.GetVouchersInPeriod(start, end);
+    Enabled = false;
 
     var progress = new Progress<float>();
-    var getInvoicesTask = _lexofficeService.GetInvoicesAsync(vouchersInPeriod, progress);
-
-    Enabled = false;
 
     var ladeForm = new LadeForm(progress, "Rechnungen werden abgefragt");
     ladeForm.Show();
 
-    var ergebnis = await getInvoicesTask;
-    Enabled = true;
+    var vouchersInPeriod = await _lexofficeService.GetVouchersInPeriod(start, end);
+
+    var ergebnis = (await _lexofficeService.GetInvoicesAsync(vouchersInPeriod, progress))
+      .Where(invoice => invoice.VoucherStatus != "voided") //Ignoriere stornierte Rechnungen
+      .ToImmutableList();
+
     ladeForm.Close();
+
+    Enabled = true;
 
     return ergebnis;
   }
