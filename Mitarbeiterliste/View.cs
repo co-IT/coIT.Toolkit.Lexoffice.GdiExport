@@ -150,7 +150,7 @@ internal partial class View : UserControl
   {
     var periodResult = ClockodoPeriod.Create(start, ende);
 
-    if(periodResult.IsFailure)
+    if (periodResult.IsFailure)
       return Result.Failure<decimal>(periodResult.Error);
 
     var period = periodResult.Value;

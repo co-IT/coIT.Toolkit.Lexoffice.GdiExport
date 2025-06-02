@@ -22,13 +22,12 @@ public class ClockodoKonfigurationDataTableRepository : IClockodoKonfigurationRe
     {
       return await Result
         .Success()
-        .Map(
-          () =>
-            _tableClient.GetEntityIfExistsAsync<ClockodoKonfigurationEntity>(
-              ClockodoKonfigurationEntity.TabellenName,
-              ClockodoKonfigurationEntity.GlobalIdentifier,
-              cancellationToken: cancellationToken
-            )
+        .Map(() =>
+          _tableClient.GetEntityIfExistsAsync<ClockodoKonfigurationEntity>(
+            ClockodoKonfigurationEntity.TabellenName,
+            ClockodoKonfigurationEntity.GlobalIdentifier,
+            cancellationToken: cancellationToken
+          )
         )
         .Ensure(
           response => response.HasValue,
