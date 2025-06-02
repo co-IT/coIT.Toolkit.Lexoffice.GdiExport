@@ -30,7 +30,7 @@ jobs:
         run: dotnet csharpier check .
 
       - name: Anwendung bauen
-        run: dotnet publish -c Release -r win-x64 ${{ github.workspace }}\coIT.Toolkit.Lexoffice.GdiExport.csproj --property:PublishProfile="FolderProfile"
+        run: dotnet publish -c Release -r win-x64 ${{ github.workspace }}\coIT.Toolkit.Lexoffice.GdiExport.csproj --property:PublishProfile="FolderProfile" -p:Version=0.0.0 -p:FileVersion=0.0.0
 
       - name: Installer bauen
         uses: caphyon/advinst-github-action@v2.0
