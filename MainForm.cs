@@ -38,6 +38,8 @@ public partial class MainForm : Form
   {
     InitializeComponent();
 
+    Text = $"{Text} | {Application.ProductVersion.Split("+").First()}";
+
     PrepareListView(lview_ErkannteFehler);
     PrepareListView(lview_InvoiceLines);
     PrepareMonthSelectionButtons();
