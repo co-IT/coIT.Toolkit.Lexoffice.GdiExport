@@ -22,13 +22,12 @@ public class LexofficeKonfigurationDataTableRepository : ILexofficeKonfiguration
     {
       return await Result
         .Success()
-        .Map(
-          () =>
-            _tableClient.GetEntityIfExistsAsync<LexofficeKonfigurationEntity>(
-              LexofficeKonfigurationEntity.TabellenName,
-              LexofficeKonfigurationEntity.GlobalIdentifier,
-              cancellationToken: cancellationToken
-            )
+        .Map(() =>
+          _tableClient.GetEntityIfExistsAsync<LexofficeKonfigurationEntity>(
+            LexofficeKonfigurationEntity.TabellenName,
+            LexofficeKonfigurationEntity.GlobalIdentifier,
+            cancellationToken: cancellationToken
+          )
         )
         .Ensure(
           response => response.HasValue,
