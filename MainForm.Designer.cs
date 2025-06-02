@@ -59,9 +59,9 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           ((System.ComponentModel.ISupportInitialize)spcUmsatzkontenSplit).BeginInit();
           spcUmsatzkontenSplit.SuspendLayout();
           SuspendLayout();
-          // 
+          //
           // tbc
-          // 
+          //
           tbc.Controls.Add(tbpRequest);
           tbc.Controls.Add(tbpDebitorNumber);
           tbc.Controls.Add(tbpAccounts);
@@ -72,9 +72,9 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           tbc.SelectedIndex = 0;
           tbc.Size = new System.Drawing.Size(1264, 709);
           tbc.TabIndex = 0;
-          // 
+          //
           // tbpRequest
-          // 
+          //
           tbpRequest.Controls.Add(lblStatistiken);
           tbpRequest.Controls.Add(lview_InvoiceLines);
           tbpRequest.Controls.Add(groupBox1);
@@ -85,17 +85,17 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           tbpRequest.TabIndex = 0;
           tbpRequest.Text = "Export";
           tbpRequest.UseVisualStyleBackColor = true;
-          // 
+          //
           // lblStatistiken
-          // 
+          //
           lblStatistiken.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
           lblStatistiken.Location = new System.Drawing.Point(18, 195);
           lblStatistiken.Name = "lblStatistiken";
           lblStatistiken.Size = new System.Drawing.Size(1220, 110);
           lblStatistiken.TabIndex = 8;
-          // 
+          //
           // lview_InvoiceLines
-          // 
+          //
           lview_InvoiceLines.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
           lview_InvoiceLines.Location = new System.Drawing.Point(18, 307);
           lview_InvoiceLines.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -104,9 +104,9 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           lview_InvoiceLines.TabIndex = 3;
           lview_InvoiceLines.UseCompatibleStateImageBehavior = false;
           lview_InvoiceLines.View = System.Windows.Forms.View.Details;
-          // 
+          //
           // groupBox1
-          // 
+          //
           groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
           groupBox1.Controls.Add(label2);
           groupBox1.Controls.Add(lview_ErkannteFehler);
@@ -117,18 +117,18 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           groupBox1.Size = new System.Drawing.Size(1220, 186);
           groupBox1.TabIndex = 7;
           groupBox1.TabStop = false;
-          // 
+          //
           // label2
-          // 
+          //
           label2.AutoSize = true;
           label2.Location = new System.Drawing.Point(426, 15);
           label2.Name = "label2";
           label2.Size = new System.Drawing.Size(153, 15);
           label2.TabIndex = 6;
           label2.Text = "Beim Laden erkannte Fehler";
-          // 
+          //
           // lview_ErkannteFehler
-          // 
+          //
           lview_ErkannteFehler.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right));
           lview_ErkannteFehler.Location = new System.Drawing.Point(427, 33);
           lview_ErkannteFehler.Name = "lview_ErkannteFehler";
@@ -136,9 +136,9 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           lview_ErkannteFehler.TabIndex = 3;
           lview_ErkannteFehler.UseCompatibleStateImageBehavior = false;
           lview_ErkannteFehler.View = System.Windows.Forms.View.Details;
-          // 
+          //
           // gbxGdiExport
-          // 
+          //
           gbxGdiExport.Controls.Add(btnTwoMonthsAgo);
           gbxGdiExport.Controls.Add(btnBeforeLastMonth);
           gbxGdiExport.Controls.Add(btnLastMonth);
@@ -157,9 +157,9 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           gbxGdiExport.TabIndex = 4;
           gbxGdiExport.TabStop = false;
           gbxGdiExport.Text = "GDI Export";
-          // 
+          //
           // btnTwoMonthsAgo
-          // 
+          //
           btnTwoMonthsAgo.Location = new System.Drawing.Point(274, 84);
           btnTwoMonthsAgo.Name = "btnTwoMonthsAgo";
           btnTwoMonthsAgo.Size = new System.Drawing.Size(111, 27);
@@ -167,9 +167,9 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           btnTwoMonthsAgo.Text = "Vor-vorletzter Monat";
           btnTwoMonthsAgo.UseVisualStyleBackColor = true;
           btnTwoMonthsAgo.Click += btnTwoMonthsAgo_Click;
-          // 
+          //
           // btnBeforeLastMonth
-          // 
+          //
           btnBeforeLastMonth.Location = new System.Drawing.Point(274, 51);
           btnBeforeLastMonth.Name = "btnBeforeLastMonth";
           btnBeforeLastMonth.Size = new System.Drawing.Size(111, 27);
@@ -177,9 +177,9 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           btnBeforeLastMonth.Text = "Vorletzter Monat";
           btnBeforeLastMonth.UseVisualStyleBackColor = true;
           btnBeforeLastMonth.Click += btnBeforeLastMonth_Click;
-          // 
+          //
           // btnLastMonth
-          // 
+          //
           btnLastMonth.Location = new System.Drawing.Point(274, 18);
           btnLastMonth.Name = "btnLastMonth";
           btnLastMonth.Size = new System.Drawing.Size(111, 27);
@@ -187,9 +187,9 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           btnLastMonth.Text = "Letzter Monat";
           btnLastMonth.UseVisualStyleBackColor = true;
           btnLastMonth.Click += btnLastMonth_Click;
-          // 
+          //
           // cbxIncludeCustomers
-          // 
+          //
           cbxIncludeCustomers.AutoSize = true;
           cbxIncludeCustomers.Checked = true;
           cbxIncludeCustomers.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -199,9 +199,9 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           cbxIncludeCustomers.TabIndex = 6;
           cbxIncludeCustomers.Text = "Inkludiere Leistungsempfänger";
           cbxIncludeCustomers.UseVisualStyleBackColor = true;
-          // 
+          //
           // btnAnzeigen
-          // 
+          //
           btnAnzeigen.Location = new System.Drawing.Point(25, 125);
           btnAnzeigen.Name = "btnAnzeigen";
           btnAnzeigen.Size = new System.Drawing.Size(106, 27);
@@ -209,18 +209,18 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           btnAnzeigen.Text = "🖥 Anzeigen";
           btnAnzeigen.UseVisualStyleBackColor = true;
           btnAnzeigen.Click += btnAnzeigen_Click;
-          // 
+          //
           // label1
-          // 
+          //
           label1.AutoSize = true;
           label1.Location = new System.Drawing.Point(17, 54);
           label1.Name = "label1";
           label1.Size = new System.Drawing.Size(36, 15);
           label1.TabIndex = 4;
           label1.Text = "Ende:";
-          // 
+          //
           // btnGenerateGdiExportFile
-          // 
+          //
           btnGenerateGdiExportFile.Location = new System.Drawing.Point(149, 125);
           btnGenerateGdiExportFile.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
           btnGenerateGdiExportFile.Name = "btnGenerateGdiExportFile";
@@ -229,9 +229,9 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           btnGenerateGdiExportFile.Text = "📃 Exportieren";
           btnGenerateGdiExportFile.UseVisualStyleBackColor = true;
           btnGenerateGdiExportFile.Click += btnGenerateGdiExportFile_Click;
-          // 
+          //
           // dtpStart
-          // 
+          //
           dtpStart.CustomFormat = "  ddd dd MMM yyyy";
           dtpStart.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
           dtpStart.Location = new System.Drawing.Point(61, 21);
@@ -239,18 +239,18 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           dtpStart.Name = "dtpStart";
           dtpStart.Size = new System.Drawing.Size(194, 23);
           dtpStart.TabIndex = 0;
-          // 
+          //
           // lblStart
-          // 
+          //
           lblStart.AutoSize = true;
           lblStart.Location = new System.Drawing.Point(19, 23);
           lblStart.Name = "lblStart";
           lblStart.Size = new System.Drawing.Size(34, 15);
           lblStart.TabIndex = 3;
           lblStart.Text = "Start:";
-          // 
+          //
           // dtpEnd
-          // 
+          //
           dtpEnd.CustomFormat = "  ddd dd MMM yyyy";
           dtpEnd.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
           dtpEnd.Location = new System.Drawing.Point(61, 54);
@@ -258,9 +258,9 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           dtpEnd.Name = "dtpEnd";
           dtpEnd.Size = new System.Drawing.Size(194, 23);
           dtpEnd.TabIndex = 1;
-          // 
+          //
           // tbpDebitorNumber
-          // 
+          //
           tbpDebitorNumber.Location = new System.Drawing.Point(4, 24);
           tbpDebitorNumber.Name = "tbpDebitorNumber";
           tbpDebitorNumber.Padding = new System.Windows.Forms.Padding(3);
@@ -268,9 +268,9 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           tbpDebitorNumber.TabIndex = 1;
           tbpDebitorNumber.Text = "Leistungsempfänger";
           tbpDebitorNumber.UseVisualStyleBackColor = true;
-          // 
+          //
           // tbpAccounts
-          // 
+          //
           tbpAccounts.Controls.Add(spcUmsatzkontenSplit);
           tbpAccounts.Location = new System.Drawing.Point(4, 24);
           tbpAccounts.Name = "tbpAccounts";
@@ -279,9 +279,9 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           tbpAccounts.TabIndex = 2;
           tbpAccounts.Text = "Umsätze";
           tbpAccounts.UseVisualStyleBackColor = true;
-          // 
+          //
           // spcUmsatzkontenSplit
-          // 
+          //
           spcUmsatzkontenSplit.Dock = System.Windows.Forms.DockStyle.Fill;
           spcUmsatzkontenSplit.Location = new System.Drawing.Point(3, 3);
           spcUmsatzkontenSplit.Name = "spcUmsatzkontenSplit";
@@ -289,9 +289,9 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           spcUmsatzkontenSplit.Size = new System.Drawing.Size(1250, 675);
           spcUmsatzkontenSplit.SplitterDistance = 257;
           spcUmsatzkontenSplit.TabIndex = 0;
-          // 
+          //
           // tbpMiterabeiterliste
-          // 
+          //
           tbpMiterabeiterliste.Location = new System.Drawing.Point(4, 24);
           tbpMiterabeiterliste.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
           tbpMiterabeiterliste.Name = "tbpMiterabeiterliste";
@@ -300,15 +300,15 @@ namespace coIT.Toolkit.Lexoffice.GdiExport
           tbpMiterabeiterliste.TabIndex = 3;
           tbpMiterabeiterliste.Text = "Mitarbeiter";
           tbpMiterabeiterliste.UseVisualStyleBackColor = true;
-          // 
+          //
           // MainForm
-          // 
+          //
           AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
           AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
           ClientSize = new System.Drawing.Size(1264, 709);
           Controls.Add(tbc);
           Icon = ((System.Drawing.Icon)resources.GetObject("$this.Icon"));
-          Text = "co-IT.eu GmbH | Lexoffice to GDI Export";
+          Text = "co-IT.eu GmbH | Lexware Office to GDI Export";
           Load += Form1_Load;
           tbc.ResumeLayout(false);
           tbpRequest.ResumeLayout(false);
