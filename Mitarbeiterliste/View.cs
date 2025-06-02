@@ -5,6 +5,7 @@ using coIT.Libraries.LexOffice.DataContracts.Invoice;
 using coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter;
 using coIT.Libraries.Toolkit.Datengrundlagen.Umsatzkonten;
 using coIT.Libraries.WinForms;
+using CSharpFunctionalExtensions;
 using Team = coIT.Libraries.Toolkit.Datengrundlagen.Mitarbeiter.Team;
 
 namespace coIT.Toolkit.Lexoffice.GdiExport.Mitarbeiterliste;
@@ -115,12 +116,21 @@ internal partial class View : UserControl
       _konfiguration.LexofficeKey
     );
 
-    var aufgewendeteStunden = await AufgewendeteStundenFürTeamUndZeitraumBerechnen(
+    var aufgewendeteStundenResult = await AufgewendeteStundenFürTeamUndZeitraumBerechnen(
       start,
       ende,
       ausgewähltesKonto,
       mitarbeiterNummernInAusgewähltenTeam
     );
+
+    if (aufgewendeteStundenResult.IsFailure)
+    {
+      MessageBox.Show(aufgewendeteStundenResult.Error, "Fehler", MessageBoxButtons.OK);
+      btnBerechnen.Enabled = true;
+      return;
+    }
+
+    var aufgewendeteStunden = aufgewendeteStundenResult.Value;
 
     var stundenSatz = aufgewendeteStunden != 0 ? nettoErlös / aufgewendeteStunden : nettoErlös;
 
@@ -131,15 +141,21 @@ internal partial class View : UserControl
     btnBerechnen.Enabled = true;
   }
 
-  private async Task<decimal> AufgewendeteStundenFürTeamUndZeitraumBerechnen(
+  private async Task<Result<decimal>> AufgewendeteStundenFürTeamUndZeitraumBerechnen(
     DateOnly start,
     DateOnly ende,
     Umsatzkonto ausgewähltesKonto,
     List<int> mitarbeiterNummernInAusgewähltenTeam
   )
   {
-    var period = ClockodoPeriod.Create(start, ende);
-    var zeiteinträge = await _clockodoservice.GetTimeEntriesAsync(period.Value);
+    var periodResult = ClockodoPeriod.Create(start, ende);
+
+    if(periodResult.IsFailure)
+      return Result.Failure<decimal>(periodResult.Error);
+
+    var period = periodResult.Value;
+
+    var zeiteinträge = await _clockodoservice.GetTimeEntriesAsync(period);
 
     var mitarbeiterNummernAlsString = mitarbeiterNummernInAusgewähltenTeam.Select(nummer => nummer.ToString());
 
