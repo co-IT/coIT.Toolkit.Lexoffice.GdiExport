@@ -1,6 +1,6 @@
 # coIT.Toolkit.Lexoffice.GdiExport
 
-Programm um Rechnungen aus Lexoffice für den GDI Import vorzubereiten. Enthält zusätzlich Funktionalitäten zum Abgleichen von Konten und Prüfen von Rechnungen
+Programm um Rechnungen aus Lexware Office für den GDI-Import vorzubereiten. Enthält zusätzlich Funktionalitäten zum Abgleichen von Konten und Prüfen von Rechnungen.
 
 ## Anleitung
 
