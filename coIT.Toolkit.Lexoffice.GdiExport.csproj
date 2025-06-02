@@ -8,14 +8,14 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Ardalis.SmartEnum" Version="8.2.0" />
-    <PackageReference Include="coIT.Libraries.Clockodo" Version="1.0.0"/>
+    <PackageReference Include="coIT.Libraries.Clockodo" Version="1.0.7" />
     <PackageReference Include="coIT.Libraries.ConfigurationManager" Version="1.1.1" />
     <PackageReference Include="coIT.Libraries.Gdi" Version="1.0.0"/>
-    <PackageReference Include="coIT.Libraries.LexOffice" Version="1.0.1"/>
-    <PackageReference Include="coIT.Libraries.Lexoffice.BusinessRules" Version="3.0.0"/>
+    <PackageReference Include="coIT.Libraries.LexOffice" Version="1.0.2" />
+    <PackageReference Include="coIT.Libraries.Lexoffice.BusinessRules" Version="3.1.1" />
     <PackageReference Include="coIT.Libraries.Toolkit.Datengrundlagen" Version="3.1.0"/>
     <PackageReference Include="coIT.Libraries.WinForms" Version="1.0.0"/>
-    <PackageReference Include="Krypton.Toolkit.Suite.Extended.TreeGridView" Version="90.24.11.317" />
+    <PackageReference Include="Krypton.Toolkit.Suite.Extended.TreeGridView" Version="95.25.5.145" />
     <PackageReference Include="Microsoft.DependencyValidation.Analyzers" Version="0.11.0"/>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
   </ItemGroup>
